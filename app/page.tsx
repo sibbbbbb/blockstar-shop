@@ -6,12 +6,12 @@ import { getNews } from '@/api/news'
 
 export default function Home () {
   const [timeLeft, setTimeLeft] = useState('')
-  const [news, setNews] = useState([])
+  const [news, setNews] = useState<any[]>([])
 
-  const targetDate = new Date('2024-12-18T00:00:00')
+  const targetDate: any = new Date('2024-12-18T00:00:00')
 
   const calculateTimeLeft = () => {
-    const now = new Date()
+    const now: any = new Date()
     const difference = targetDate - now
 
     if (difference <= 0) return '¡Llegamos al miércoles 18 de diciembre!'
