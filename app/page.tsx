@@ -1,12 +1,18 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
+import Marquee from "react-fast-marquee";
 import Image from 'next/image'
 import { getNews } from '@/api/news'
 
+type News = {
+  title: any 
+  date: any
+}
+
 export default function Home () {
   const [timeLeft, setTimeLeft] = useState('')
-  const [news, setNews] = useState<any[]>([])
+  const [news, setNews] = useState<News[]>([])
 
   const targetDate: any = new Date('2024-12-18T00:00:00')
 
@@ -31,7 +37,7 @@ export default function Home () {
       setTimeLeft(calculateTimeLeft())
     }, 1000)
 
-    getNews().then((news: Array<any>) => {
+    getNews().then((news: News[]) => {
       setNews(news)
     })
     return () => clearInterval(interval) // Limpiar intervalo al desmontar el componente
@@ -39,7 +45,6 @@ export default function Home () {
 
   return (
     <div className='relative h-screen w-screen bg-black text-white'>
-      { news }
       <div className='flex items-center justify-center h-full w-full gap-x-40 '>
         <Image
           src='/logos/blockstar-white.svg'
@@ -61,6 +66,19 @@ export default function Home () {
             height={15}
           />
         </div>
+      </div>
+      <div className='absolute top-10 w-screen border-t-2 border-b-2 py-2 border-[#363636]'>
+        <Marquee>
+        { news.map(({ title, date }, index) => (
+          <div className='flex items-center justify-center text-[#CCCCCC] font-monument uppercase' key={index}>
+            <span>[</span>
+            <span>{date}</span>
+            <span className='mx-2'>{title}</span>
+            <span>]</span>
+            <span className='mx-2'>-</span>
+          </div>
+        )) }
+        </Marquee>
       </div>
       <div className='absolute text-white bottom-0 right-0'>
         <Image

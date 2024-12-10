@@ -14,6 +14,7 @@ export default {
       },
       fontFamily: {
         helvetica: ["var(--font-helvetica-lt-std)"],
+        monument: ["var(--font-monument-grotesk)"],
       },
     },
   },

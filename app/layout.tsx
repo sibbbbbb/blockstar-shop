@@ -8,6 +8,12 @@ const helveticaLTStd = localFont({
   weight: "400 700",
 });
 
+const MonumentGrotesk = localFont({
+  src: "./../public/fonts/ABCMonumentGroteskSemi-Mono-Medium.otf",
+  variable: "--font-monument-grotesk",
+  weight: "400 700",
+});
+
 export const metadata: Metadata = {
   title: "Blockstar",
   description: "Blockstar Shop",
@@ -21,7 +27,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${helveticaLTStd.variable} antialiased bg-black text-white`}
+        className={`${helveticaLTStd.variable} ${MonumentGrotesk.variable} antialiased bg-black text-white`}
       >
         {children}
       </body>
