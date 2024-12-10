@@ -19,7 +19,7 @@ export default function NewsSlider () {
   }, [])
 
   return (
-    <div className='absolute top-10 w-screen border-t-2 border-b-2 py-2 border-[#363636]'>
+    <div className='absolute top-4 md:top-10 w-screen border-t-2 border-b-2 py-2 border-[#363636]'>
       <Marquee>
       { news.map(({ title, date }, index) => (
         <div className='flex items-center justify-center text-[#363636] md:text-[#CCCCCC] font-monument uppercase' key={index}>

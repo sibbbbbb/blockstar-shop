@@ -8,6 +8,9 @@ export default {
   ],
   theme: {
     extend: {
+      height: {
+        'screen-dvh': '100dvh',
+      },
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
