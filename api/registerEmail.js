@@ -1,7 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 
-const supabaseUrl = process.env.DB_URL
-const supabaseAnonKey = process.env.DB_KEY
+const supabaseUrl = process.env.NEXT_PUBLIC_DB_URL
+const supabaseAnonKey = process.env.NEXT_PUBLIC_DB_KEY
 
 console.log(supabaseUrl, supabaseAnonKey)
 
