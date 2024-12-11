@@ -29,6 +29,7 @@ export default function Home () {
       setSend(true)
     }
     catch (e) {
+      console.error(e)
       setShowError(true)
     }
   }
