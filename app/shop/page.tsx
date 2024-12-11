@@ -1,3 +1,3 @@
-export default function Shop() {
-  return <div>hola</div>;
+export default function Shop () {
+  return <div />
 }

@@ -6,9 +6,13 @@ import NewsSlider from '@/components/ui/NewsSlider'
 import TimeLeft from '@/components/ui/TimeLeft'
 import { putEmail } from '@/api/registerEmail'
 
+type Message = {
+  message: string
+  color: string
+}
+
 export default function Home () {
-  const [showError, setShowError] = useState<boolean>(false)
-  const [send, setSend] = useState<boolean>(false)
+  const [showMessage, setShowMessage] = useState<Message | null>(null)
   const [email, setEmail] = useState<string>('')
   const [showInput, setShowInput] = useState(false)
 
@@ -20,17 +24,18 @@ export default function Home () {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     try {
       e.preventDefault()
-      setShowError(false)
-      setSend(false)
+      setShowMessage(null)
       
-      if (!email.includes('@')) setShowError(true)
+      if (!email.includes('@')) {
+        return setShowMessage({ message: 'Ingresa un mail valido', color: 'text-red-500' })
+      }
 
       await putEmail(email)
-      setSend(true)
+      setShowMessage({ message: 'Mail registrado correctamente. Pronto tendras novedades', color: 'text-green-500' })
     }
     catch (e) {
       console.error(e)
-      setShowError(true)
+      setShowMessage({ message: 'Ocurrio un error, intentalo mas tarde', color: 'text-red-500' })
     }
   }
 
@@ -53,9 +58,9 @@ export default function Home () {
                 <div className='flex flex-row items-start md:items-center justify-between gap-x-5 my-4 md:my-0 text-lg bg-white text-black w-[22rem] md:w-[25rem] h-24 md:h-10 py-1 px-4 rounded-sm'>
                   <input
                     type='text' placeholder='tu mail' value={email}
-                    onChange={handleChange} name="email" id='mail' className='w-full h-full text-xl md:text-base font-bold focus:outline-none'
+                    onChange={handleChange} name="email" id='mail' className='md:w-full md:h-full text-xl md:text-base font-bold focus:outline-none'
                   />
-                  <button type='submit' className='flex items-center justify-center w-10 h-full cursor-pointer'>
+                  <button type='submit' className='flex items-start md:items-center justify-center w-6 md:w-10 h-full cursor-pointer'>
                     <div className='relative w-[2rem] md:w-[1rem] h-[2rem] md:h-[1rem]'>
                       <Image
                         src='/icons/arrow-right.svg'
@@ -65,12 +70,9 @@ export default function Home () {
                     </div>
                   </button>
                 </div>
-                {
-                  showError && (<span className="text-[10px] text-red-500">Ingresa un mail valido</span>)
-                }
-                {
-                  send && (<span className="text-[10px] text-green-500">Mail registrado correctamente</span>)
-                }
+                  {
+                    showMessage && (<span className={`text-[10px] ${showMessage.color}`}>{ showMessage.message }</span>)
+                  }
               </form>
               )
             : (
@@ -87,8 +89,8 @@ export default function Home () {
               )
         }
       </div>
-      <div className='absolute text-white -bottom-64 -right-48'>
-        <div className='relative h-[15rem] sm:h-[20rem] md:h-[40rem] w-[15rem] sm:w-[20rem] md:w-[40rem]'>
+      <div className='absolute text-white -bottom-32 -right-28 md:-bottom-64 md:-right-48'>
+        <div className='relative h-[20rem] sm:h-[20rem] md:h-[40rem] w-[20rem] sm:w-[20rem] md:w-[40rem]'>
           <Image
             src='/logos/B OUTLINE.svg'
             alt='Blockstar logo'
