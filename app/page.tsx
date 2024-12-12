@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, ChangeEvent  } from 'react'
+import React, { useState, ChangeEvent, useRef, useEffect } from 'react'
 import Image from 'next/image'
 import NewsSlider from '@/components/ui/NewsSlider'
 import TimeLeft from '@/components/ui/TimeLeft'
@@ -15,6 +15,7 @@ export default function Home () {
   const [showMessage, setShowMessage] = useState<Message | null>(null)
   const [email, setEmail] = useState<string>('')
   const [showInput, setShowInput] = useState(false)
+  const inputRef = useRef<HTMLInputElement>(null)
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const mail = e.target.value;
@@ -39,6 +40,12 @@ export default function Home () {
     }
   }
 
+  useEffect(() => {
+    if (showInput && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [showInput])
+
   return (
     <div className='relative h-screen-dvh w-screen overflow-hidden bg-black text-white'>
       <NewsSlider />
@@ -57,7 +64,7 @@ export default function Home () {
               <form onSubmit={handleSubmit}>
                 <div className='flex flex-row items-start md:items-center justify-between gap-x-5 my-4 md:my-0 text-lg bg-white text-black w-[22rem] md:w-[25rem] h-24 md:h-10 py-1 px-4 rounded-sm'>
                   <input
-                    type='text' placeholder='tu mail' value={email}
+                    type='text' placeholder='tu mail' value={email} ref={inputRef}
                     onChange={handleChange} name="email" id='mail' className='md:w-full md:h-full text-xl md:text-base font-bold focus:outline-none'
                   />
                   <button type='submit' className='flex items-start md:items-center justify-center w-6 md:w-10 h-full cursor-pointer'>
@@ -76,7 +83,11 @@ export default function Home () {
               </form>
               )
             : (
-              <div className='flex flex-row items-start md:items-center justify-between gap-x-5 my-4 md:my-0 text-lg bg-white text-black w-[22rem] md:w-[25rem] h-24 md:h-10 py-1 px-4 rounded-sm cursor-pointer' onClick={() => setShowInput(true)}>
+              <div className='flex flex-row items-start md:items-center justify-between gap-x-5 my-4 md:my-0 text-lg bg-white text-black w-[22rem] md:w-[25rem] h-24 md:h-10 py-1 px-4 rounded-sm cursor-pointer'
+                onClick={() => {
+                  setShowInput(true)
+                }}
+              >
                 <span className='text-xl md:text-base font-bold'>unite al club</span>
                 <div className='relative w-[2rem] md:w-[1rem] h-[2rem] md:h-[1rem]'>
                   <Image

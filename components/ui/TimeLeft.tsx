@@ -3,13 +3,13 @@ import React, { useEffect, useState } from 'react'
 export default function TimeLeft () {
   const [timeLeft, setTimeLeft] = useState('')
 
-  const targetDate: any = new Date('2024-12-18T00:00:00')
+  const targetDate: any = new Date('2024-12-19T00:00:00')
 
   const calculateTimeLeft = () => {
     const now: any = new Date()
     const difference = targetDate - now
 
-    if (difference <= 0) return '¡Llegamos al miércoles 18 de diciembre!'
+    if (difference <= 0) return 'Bienvenido al club'
 
     const days = Math.floor(difference / (1000 * 60 * 60 * 24))
     const hours = Math.floor((difference / (1000 * 60 * 60)) % 24)
