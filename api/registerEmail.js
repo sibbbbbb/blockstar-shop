@@ -12,7 +12,6 @@ export async function putEmail (email) {
       .insert([
         { email }
       ])
-      .select()
   } catch (error) {
     throw new Error(error)
   }
