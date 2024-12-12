@@ -15,8 +15,8 @@ const MonumentGrotesk = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Blockstar",
-  description: "Blockstar Shop",
+  title: "BLOCKSTAR",
+  description: "BLOCKSTAR",
 };
 
 export default function RootLayout({
