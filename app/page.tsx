@@ -28,15 +28,15 @@ export default function Home () {
       setShowMessage(null)
       
       if (!email.includes('@')) {
-        return setShowMessage({ message: 'Ingresa un mail valido', color: 'text-red-500' })
+        return setShowMessage({ message: 'ingresa un mail valido.', color: 'text-red-500' })
       }
 
       await putEmail(email)
-      setShowMessage({ message: 'Mail registrado correctamente. Pronto tendras novedades', color: 'text-green-500' })
+      setShowMessage({ message: 'listo, registrado. estate atento.', color: 'text-green-500' })
     }
     catch (e) {
       console.error(e)
-      setShowMessage({ message: 'Ocurrio un error, intentalo mas tarde', color: 'text-red-500' })
+      setShowMessage({ message: 'ocurrio un error. intentalo de nuevo.', color: 'text-red-500' })
     }
   }
 
