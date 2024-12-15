@@ -1,4 +1,3 @@
-import { ReactNode } from "react";
 import b1 from "/public/logos/b-white.svg";
 import b2 from "/public/logos/b-black.svg";
 import star from "/public/icons/star.svg";
@@ -6,19 +5,18 @@ import flag from "/public/icons/flag.svg";
 import car from "/public/icons/car.svg";
 import Image from "next/image";
 import { NewsSlider } from "@/components/ui/NewsSlider";
-interface ShopLayoutProps {
-  children: ReactNode;
-  showStar?: boolean;
-  showFlag?: boolean;
-  showCar?: boolean;
-}
 
-export const ShopLayout: React.FC<ShopLayoutProps> = ({
+export default function RootLayout({
   children,
   showStar,
   showFlag,
   showCar,
-}) => {
+}: Readonly<{
+  children: React.ReactNode;
+  showStar?: boolean;
+  showFlag?: boolean;
+  showCar?: boolean;
+}>) {
   return (
     <div className="h-[100vh]">
       <NewsSlider newsClassName="italic opacity-35" />
@@ -56,4 +54,5 @@ export const ShopLayout: React.FC<ShopLayoutProps> = ({
       {children}
     </div>
   );
-};
+}
+
