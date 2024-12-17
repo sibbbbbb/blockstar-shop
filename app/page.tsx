@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState, ChangeEvent } from "react";
+import React, { useState, ChangeEvent, useRef, useEffect } from "react";
 import Image from "next/image";
-import { NewsSlider } from "@/components/ui/NewsSlider";
+import NewsSlider from "@/components/ui/NewsSlider";
 import TimeLeft from "@/components/ui/TimeLeft";
 import { putEmail } from "@/api/registerEmail";
 
@@ -15,6 +15,7 @@ export default function Home() {
   const [showMessage, setShowMessage] = useState<Message | null>(null);
   const [email, setEmail] = useState<string>("");
   const [showInput, setShowInput] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const mail = e.target.value;
@@ -28,24 +29,30 @@ export default function Home() {
 
       if (!email.includes("@")) {
         return setShowMessage({
-          message: "Ingresa un mail valido",
+          message: "ingresa un mail valido.",
           color: "text-red-500",
         });
       }
 
       await putEmail(email);
       setShowMessage({
-        message: "Mail registrado correctamente. Pronto tendras novedades",
+        message: "listo, registrado. estate atento.",
         color: "text-green-500",
       });
     } catch (e) {
       console.error(e);
       setShowMessage({
-        message: "Ocurrio un error, intentalo mas tarde",
+        message: "ocurrio un error. intentalo de nuevo.",
         color: "text-red-500",
       });
     }
   };
+
+  useEffect(() => {
+    if (showInput && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [showInput]);
 
   return (
     <div className="relative h-screen-dvh w-screen overflow-hidden bg-black text-white">
@@ -62,6 +69,7 @@ export default function Home() {
                 type="text"
                 placeholder="tu mail"
                 value={email}
+                ref={inputRef}
                 onChange={handleChange}
                 name="email"
                 id="mail"
@@ -85,7 +93,9 @@ export default function Home() {
         ) : (
           <div
             className="flex flex-row items-start md:items-center justify-between gap-x-5 my-4 md:my-0 text-lg bg-white text-black w-[22rem] md:w-[25rem] h-24 md:h-10 py-1 px-4 rounded-sm cursor-pointer"
-            onClick={() => setShowInput(true)}
+            onClick={() => {
+              setShowInput(true);
+            }}
           >
             <span className="text-xl md:text-base font-bold">
               unite al club
