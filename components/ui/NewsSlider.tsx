@@ -28,7 +28,7 @@ export const NewsSlider: React.FC<NewsSliderProps> = ({
 
   return (
     <div
-      className={`absolute top-4 md:top-10 w-screen border-t-2 border-b-2 py-2 border-[#363636] ${containerClassName}`}
+      className={`absolute top-4 md:top-10 w-screen border-t-2 border-b-2 py- border-[#363636] ${containerClassName}`}
     >
       <Marquee>
         {news.map(({ title, date }, index) => (
