@@ -14,7 +14,7 @@ interface NewsSliderProps {
   newsClassName?: string;
 }
 
-export const NewsSlider: React.FC<NewsSliderProps> = ({
+const NewsSlider: React.FC<NewsSliderProps> = ({
   containerClassName,
   newsClassName,
 }) => {
@@ -47,3 +47,5 @@ export const NewsSlider: React.FC<NewsSliderProps> = ({
     </div>
   );
 };
+
+export default NewsSlider;

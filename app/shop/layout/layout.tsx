@@ -5,7 +5,7 @@ import star from "/public/icons/star.svg";
 import flag from "/public/icons/flag.svg";
 import bigcar from "/public/icons/bigcar.svg";
 import Image from "next/image";
-import { NewsSlider } from "@/components/ui/NewsSlider";
+import NewsSlider from "@/components/ui/NewsSlider";
 interface ShopLayoutProps {
   children: ReactNode;
   showStar?: boolean;

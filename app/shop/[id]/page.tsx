@@ -26,7 +26,7 @@ const ItemDetail: React.FC = () => {
   };
 
   const handleMinus = () => {
-    setCant(cant - 1);
+    if (cant > 1) setCant(cant - 1);
   };
 
   const handleAdd = () => {
