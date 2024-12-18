@@ -1,57 +1,72 @@
+'use client'
+
 import b1 from "/public/logos/b-white.svg";
 import b2 from "/public/logos/b-black.svg";
 import star from "/public/icons/star.svg";
 import flag from "/public/icons/flag.svg";
-import car from "/public/icons/car.svg";
+import bigcar from "/public/icons/bigcar.svg";
 import Image from "next/image";
-import { NewsSlider } from "@/components/ui/NewsSlider";
+import NewsSlider from "@/components/ui/NewsSlider";
+import { usePathname, useParams } from 'next/navigation';
+
+interface ShopLayoutProps {
+  children: ReactNode;
+}
 
 export default function RootLayout({
   children,
-  showStar,
-  showFlag,
-  showCar,
 }: Readonly<{
   children: React.ReactNode;
-  showStar?: boolean;
-  showFlag?: boolean;
-  showCar?: boolean;
 }>) {
+  const pathname = usePathname();
+  const { id: queryId } = useParams();
+
+  console.log(pathname)
+  
+  const getHiddenIcons = () => {
+    if (pathname === '/shop') ['star']
+    if (pathname.startsWith('/shop') && queryId) return []
+    return ['star']
+  }
+
+  const hiddenIcons = getHiddenIcons();
+  const icons = [
+    {
+      icon: star,
+      name: 'star',
+    },
+    {
+      icon: bigcar,
+      name: 'car',
+    },
+    {
+      icon: flag,
+      name: 'flag',
+    },
+  ]
+
+
   return (
     <div className="h-[100vh]">
-      <NewsSlider newsClassName="italic opacity-35" />
-      <Image
-        className="absolute top-0 left-0 z-10"
-        src={b1}
-        alt="b-white"
-        width={315}
-        height={315}
+      <NewsSlider
+        newsClassName="italic opacity-35 !h-7 text-[12px]"
+        containerClassName="!top-8 !border-y-[1px] !py-0 !h-7  "
       />
-      <Image
-        className="absolute bottom-0 right-0"
-        src={b2}
-        alt="b-black"
-        width={315}
-        height={315}
-      />
-      <div className="flex flex-col h-screen absolute items-center justify-center bg-black-200 ml-20 space-y-20">
-        {showStar && (
-          <button>
-            <Image src={star} alt="star" width={30} height={30} />
-          </button>
-        )}
-        {showCar && (
-          <button>
-            <Image src={car} alt="car" width={30} height={30} />
-          </button>
-        )}
-        {showFlag && (
-          <button>
-            <Image src={flag} alt="flag" width={30} height={30} />
-          </button>
-        )}
+      <Image className="absolute top-0 left-0 z-10" src={b1} alt="b-white" />
+      <Image className="absolute bottom-0 right-0" src={b2} alt="b-black" />
+      <div className="flex flex-col h-screen absolute items-center justify-center bg-black-200 ml-20 pt-10 space-y-14">
+        {
+          icons.map((icon, index) => {
+            if (hiddenIcons.includes(icon.name)) return null
+            return (
+              <button key={index}>
+                <Image src={icon.icon} alt={icon.name} />
+              </button>
+            )
+          })
+        }
       </div>
-      {children}
+      <div className="z-20">{children}</div>
     </div>
   );
 }

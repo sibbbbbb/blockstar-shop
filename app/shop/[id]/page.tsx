@@ -49,7 +49,7 @@ const ItemDetail: React.FC = () => {
   };
 
   const handleMinus = () => {
-    setCant(cant - 1);
+    if (cant > 1) setCant(cant - 1);
   };
 
   const handleAdd = () => {
@@ -81,29 +81,46 @@ const ItemDetail: React.FC = () => {
 
   return (
     <div className="flex flex-col h-screen w-screen text-white items-center justify-center ">
-      {/* Imagen */}
-      <div className="absolute">
-        <Image src={remera} alt="remera" width={338} height={487} />
-      </div>
-      <div className="flex ml-[30vw] mt-[30vh] relative">
-        <div>
-          {/* Nombre del producto */}
-          <h1 className="mt-2 text-3xl font-bold ">
-            {item.name.toUpperCase()}
-          </h1>
-          <div className="flex justify-between my-2 items-center ">
-            {/* Precio */}
-            <div className="flex justify-center  items-center text-base font-bold bg-gray-200 text-black rounded-full w-[7rem] h-9">
-              <p>${15000}</p>
+      <div className="flex flex-col h-screen w-screen text-white items-center justify-center">
+        {/* Imagen */}
+        <div className="absolute">
+          <Image src={remera} alt="remera" width={338} height={487} />
+        </div>
+        <div className="flex ml-[40vw] mt-[45vh] relative">
+          <div>
+            {/* Nombre del producto */}
+            <h1 className="text-3xl font-bold">{item.name.toUpperCase()}</h1>
+            <div className="flex justify-between my-4 items-center ">
+              {/* Precio */}
+              <div className="flex justify-center items-center text-base font-helvetica font-bold bg-gray-200 text-black rounded-full w-[5.4rem] h-7">
+                <p className="mt-1">${15000}</p>
+              </div>
+              {/* Botones cantidad */}
+              <div className="flex justify-around items-center font-bold text-base text-white rounded-full w-28 h-8 border-[1px] border-white ">
+                <button onClick={handleMinus}>-</button>
+                <p>{cant}</p>
+                <button onClick={handlePlus}>+</button>
+              </div>
             </div>
-            {/* Botones cantidad */}
-            <div className="flex justify-between items-center font-bold text-base text-white rounded-full w-[9rem] h-10 border-2 border-white ">
-              <button onClick={handleMinus} className="p-5">
-                -
+            {/* Stock si quedan menos de 5 */}
+            {/* <p className="text-base font-bold my-1">
+              {item.stock < 6 && `Ultimas: ${item.stock}`}
+            </p> */}
+            <div className="flex space-x-2">
+              {/* Botones compra */}
+              <button
+                className="flex justify-between p-4 items-center font-bold text-base text-white w-[11rem] h-11 border-[1px] border-white rounded bg-black"
+                onClick={handleAdd}
+              >
+                <p>agregar</p>
+                <Image src={car} alt="carrito" width={18} height={18} />
               </button>
-              <p>{cant}</p>
-              <button onClick={handlePlus} className="p-5">
-                +
+              <button
+                className="flex justify-between p-4 items-center font-bold text-base text-white w-[11rem] h-11 border-[1px] border-white rounded bg-black"
+                onClick={handleBuy}
+              >
+                <p>comprar</p>
+                <Image src={price} alt="precio" width={10} height={10} />
               </button>
             </div>
           </div>
@@ -111,23 +128,6 @@ const ItemDetail: React.FC = () => {
           <p className="text-base font-bold my-1">
             {item.stock < 6 && `Ultimas: ${item.stock}`}
           </p>
-          <div className="flex space-x-2">
-            {/* Botones compra */}
-            <button
-              className="flex justify-between p-4 items-center font-bold text-base text-white w-[12rem] h-11 border-2 border-white rounded bg-black"
-              onClick={handleAdd}
-            >
-              <p>agregar</p>
-              <Image src={car} alt="carrito" width={18} height={18} />
-            </button>
-            <button
-              className="flex justify-between p-4 items-center font-bold text-base text-white w-[12rem] h-11 border-2 border-white rounded bg-black"
-              onClick={handleBuy}
-            >
-              <p>comprar</p>
-              <Image src={price} alt="precio" width={10} height={10} />
-            </button>
-          </div>
         </div>
       </div>
     </div>

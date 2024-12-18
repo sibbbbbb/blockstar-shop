@@ -54,11 +54,11 @@ const ShopIndex: React.FC = () => {
                 {
                     products.length > 0 
                     ? (
-                        <div className="absolute grid grid-cols-3 top-[15%] w-[50%]">
+                        <div className="absolute grid grid-cols-3 top-[15%] w-[60%] gap-x-20">
                             {
                                 products.map(({ id, title, image, price }, index) => (
                                     <Link key={index} href={`/shop/${id}`}>
-                                        <div className="flex flex-col items-center font-helvetica" key={index}>
+                                        <div className="flex flex-col items-center font-helvetica p-4 hover:rounded-lg hover:border hover:border-gray-200 " key={index}>
                                             <Image src={image.src} alt={image.alt} width={image.width} height={image.height} />
                                             <span className='uppercase font-semibold mt-5 mb-2'>{title}</span>
                                             <PricePill price={price} />

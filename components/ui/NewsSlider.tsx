@@ -1,4 +1,4 @@
-"use client";
+"use client"
 
 import { useEffect, useState } from "react";
 import { getNews } from "@/api/news";
@@ -14,7 +14,7 @@ interface NewsSliderProps {
   newsClassName?: string;
 }
 
-export const NewsSlider: React.FC<NewsSliderProps> = ({
+const NewsSlider: React.FC<NewsSliderProps> = ({
   containerClassName,
   newsClassName,
 }) => {
@@ -30,7 +30,7 @@ export const NewsSlider: React.FC<NewsSliderProps> = ({
 
   return (
     <div
-      className={`absolute top-4 md:top-10 w-screen border-t-2 border-b-2 py-2 border-[#363636] ${containerClassName}`}
+      className={`absolute top-4 md:top-10 w-screen border-t-2 border-b-2 py- border-[#363636] ${containerClassName}`}
     >
       <Marquee>
         {news.length > 0 && news.map(({ title, date }, index) => (
@@ -49,3 +49,5 @@ export const NewsSlider: React.FC<NewsSliderProps> = ({
     </div>
   );
 };
+
+export default NewsSlider;
