@@ -4,7 +4,6 @@ import React, { useState, ChangeEvent, useRef, useEffect } from "react";
 import Image from "next/image";
 import NewsSlider from "@/components/ui/NewsSlider";
 import TimeLeft from "@/components/ui/TimeLeft";
-import { putEmail } from "@/api/registerEmail";
 
 type Message = {
   message: string;
@@ -34,7 +33,14 @@ export default function Home() {
         });
       }
 
-      await putEmail(email);
+      fetch('/api/email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email })
+      })
+
       setShowMessage({
         message: "listo, registrado. estate atento.",
         color: "text-green-500",

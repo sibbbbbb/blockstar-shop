@@ -21,9 +21,11 @@ const NewsSlider: React.FC<NewsSliderProps> = ({
   const [news, setNews] = useState<News[]>([]);
 
   useEffect(() => {
-    getNews().then((news: News[]) => {
-      setNews(news);
-    });
+    fetch("/api/news")
+      .then((res) => res.json())
+      .then((news: News[]) => {
+        setNews(news);
+      });
   }, []);
 
   return (
@@ -31,7 +33,7 @@ const NewsSlider: React.FC<NewsSliderProps> = ({
       className={`absolute top-4 md:top-10 w-screen border-t-2 border-b-2 py- border-[#363636] ${containerClassName}`}
     >
       <Marquee>
-        {news.map(({ title, date }, index) => (
+        {news.length > 0 && news.map(({ title, date }, index) => (
           <div
             className={`flex items-center justify-center text-[#363636] md:text-[#CCCCCC] font-monument uppercase ${newsClassName}`}
             key={index}

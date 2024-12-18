@@ -5,12 +5,35 @@ import { items } from "../items";
 import remera from "/public/products/remera.png";
 import price from "/public/icons/price.svg";
 import car from "/public/icons/car.svg";
-import { useState } from "react";
-import { ShopLayout } from "../layout/layout";
+import { useState, useEffect } from "react";
+import { type } from "os";
+
+type Variant = {
+  inventory_quantity: number;
+  price: number;
+};
+
+type Img = {
+  src: string;
+  height: number;
+  width: number;
+  alt: string;
+};
+
+type Product = {
+  id: number;
+  title: string;
+  image: Img;
+  price: number;
+  variants: Variant[];
+};
 
 const ItemDetail: React.FC = () => {
   const { id } = useParams();
-  const item = items.find((item) => item.id.toString() === id);
+  const [product, setProduct] = useState<Product | null>(null);
+  const [error, setError] = useState<boolean>(false);
+
+  const item = items[0];
 
   const value = Number(localStorage.getItem("cant"));
   const [cant, setCant] = useState(value ?? 1);
@@ -37,8 +60,27 @@ const ItemDetail: React.FC = () => {
     console.log("compraste " + cant + " " + item.name);
   };
 
+  useEffect(() => {
+    try {
+      fetch("/api/products/details", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ productId: id }),
+      })
+        .then((res) => res.json())
+        .then(({ product }) => {
+          setProduct(product);
+        });
+    } catch (error) {
+      console.error(error);
+      setError(true);
+    }
+  }, []);
+
   return (
-    <ShopLayout showStar showCar showFlag>
+    <div className="flex flex-col h-screen w-screen text-white items-center justify-center ">
       <div className="flex flex-col h-screen w-screen text-white items-center justify-center">
         {/* Imagen */}
         <div className="absolute">
@@ -82,9 +124,13 @@ const ItemDetail: React.FC = () => {
               </button>
             </div>
           </div>
+          {/* Stock si quedan menos de 5 */}
+          <p className="text-base font-bold my-1">
+            {item.stock < 6 && `Ultimas: ${item.stock}`}
+          </p>
         </div>
       </div>
-    </ShopLayout>
+    </div>
   );
 };
 
