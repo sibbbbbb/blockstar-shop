@@ -2,11 +2,11 @@
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import { items } from "../items";
-import remera from "/public/products/remera.png";
 import price from "/public/icons/price.svg";
 import car from "/public/icons/car.svg";
+import { PricePill } from "@/components/ui/PricePill";
+import LoadingAnimation from "@/components/ui/LoadingAnimation";
 import { useState, useEffect } from "react";
-import { type } from "os";
 
 type Variant = {
   inventory_quantity: number;
@@ -29,18 +29,14 @@ type Product = {
 };
 
 const ItemDetail: React.FC = () => {
-  const { id } = useParams();
-  const [product, setProduct] = useState<Product | null>(null);
+  const { id: queryId } = useParams();
+  const [product, setProduct] = useState<Product>();
   const [error, setError] = useState<boolean>(false);
 
   const item = items[0];
 
   const value = Number(localStorage.getItem("cant"));
   const [cant, setCant] = useState(value ?? 1);
-
-  if (!item) {
-    return <p>Prenda no encontrada.</p>;
-  }
 
   const handlePlus = () => {
     if (cant < item.stock) {
@@ -61,75 +57,103 @@ const ItemDetail: React.FC = () => {
   };
 
   useEffect(() => {
-    try {
-      fetch("/api/products/details", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ productId: id }),
-      })
-        .then((res) => res.json())
-        .then(({ product }) => {
-          setProduct(product);
-        });
-    } catch (error) {
-      console.error(error);
+    if (!queryId) {
       setError(true);
+      return;
     }
-  }, []);
+
+    fetch("/api/products/details", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ productId: queryId }),
+    })
+      .then((res) => res.json())
+      .then(({ product, error = false }) => {
+        if (error) return setError(true);
+        const formatedProduct: Product = {
+          id: product.id,
+          title: product.title,
+          image: {
+            src: product.image.src,
+            height: product.image.height,
+            width: product.image.width,
+            alt: product.image.alt,
+          },
+          variants: product.variants,
+          price: product.variants.reduce(
+            (acc: number, curr: Variant) =>
+              curr.price > acc ? curr.price : acc,
+            0
+          ),
+        };
+
+        return setProduct(formatedProduct);
+      })
+      .catch(() => setError(true));
+  }, [queryId]);
 
   return (
     <div className="flex flex-col h-screen w-screen text-white items-center justify-center ">
-      <div className="flex flex-col h-screen w-screen text-white items-center justify-center">
-        {/* Imagen */}
-        <div className="absolute">
-          <Image src={remera} alt="remera" width={338} height={487} />
-        </div>
-        <div className="flex ml-[40vw] mt-[45vh] relative">
-          <div>
-            {/* Nombre del producto */}
-            <h1 className="text-3xl font-bold">{item.name.toUpperCase()}</h1>
-            <div className="flex justify-between my-4 items-center ">
-              {/* Precio */}
-              <div className="flex justify-center items-center text-base font-helvetica font-bold bg-gray-200 text-black rounded-full w-[5.4rem] h-7">
-                <p className="mt-1">${15000}</p>
+      {error && <span>Error</span>}
+      {!product && !error && <LoadingAnimation />}
+      {product && (
+        <div className="flex flex-col h-screen w-screen text-white items-center justify-center">
+          {/* Imagen */}
+          <div className="absolute">
+            <Image
+              src={product.image.src}
+              alt={product.image.alt}
+              width={338}
+              height={487}
+            />
+          </div>
+          <div className="flex ml-[40vw] mt-[45vh] relative">
+            <div>
+              {/* Nombre del producto */}
+              <h1 className="text-3xl font-bold">
+                {product.title.toUpperCase()}
+              </h1>
+              <div className="flex justify-between my-4 items-center ">
+                {/* Precio */}
+                <PricePill price={product.price} paddingClass="px-4 py-1" />
+                {/* Botones cantidad */}
+                <div className="flex justify-around items-center font-bold text-base text-white rounded-full w-28 h-8 border-[1px] border-white ">
+                  <button onClick={handleMinus}>-</button>
+                  <p>{cant}</p>
+                  <button onClick={handlePlus}>+</button>
+                </div>
               </div>
-              {/* Botones cantidad */}
-              <div className="flex justify-around items-center font-bold text-base text-white rounded-full w-28 h-8 border-[1px] border-white ">
-                <button onClick={handleMinus}>-</button>
-                <p>{cant}</p>
-                <button onClick={handlePlus}>+</button>
+              {/* Stock si quedan menos de 5 */}
+              {/* <p className="text-base font-bold my-1">
+                    {item.stock < 6 && `Ultimas: ${item.stock}`}
+                  </p> */}
+              <div className="flex space-x-2">
+                {/* Botones compra */}
+                <button
+                  className="flex justify-between p-4 items-center font-bold text-base text-white w-[11rem] h-11 border-[1px] border-white rounded bg-black"
+                  onClick={handleAdd}
+                >
+                  <p>agregar</p>
+                  <Image src={car} alt="carrito" width={18} height={18} />
+                </button>
+                <button
+                  className="flex justify-between p-4 items-center font-bold text-base text-white w-[11rem] h-11 border-[1px] border-white rounded bg-black"
+                  onClick={handleBuy}
+                >
+                  <p>comprar</p>
+                  <Image src={price} alt="precio" width={10} height={10} />
+                </button>
               </div>
             </div>
             {/* Stock si quedan menos de 5 */}
-            {/* <p className="text-base font-bold my-1">
+            <p className="text-base font-bold my-1">
               {item.stock < 6 && `Ultimas: ${item.stock}`}
-            </p> */}
-            <div className="flex space-x-2">
-              {/* Botones compra */}
-              <button
-                className="flex justify-between p-4 items-center font-bold text-base text-white w-[11rem] h-11 border-[1px] border-white rounded bg-black"
-                onClick={handleAdd}
-              >
-                <p>agregar</p>
-                <Image src={car} alt="carrito" width={18} height={18} />
-              </button>
-              <button
-                className="flex justify-between p-4 items-center font-bold text-base text-white w-[11rem] h-11 border-[1px] border-white rounded bg-black"
-                onClick={handleBuy}
-              >
-                <p>comprar</p>
-                <Image src={price} alt="precio" width={10} height={10} />
-              </button>
-            </div>
+            </p>
           </div>
-          {/* Stock si quedan menos de 5 */}
-          <p className="text-base font-bold my-1">
-            {item.stock < 6 && `Ultimas: ${item.stock}`}
-          </p>
         </div>
-      </div>
+      )}
     </div>
   );
 };

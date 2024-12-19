@@ -1,7 +1,6 @@
 "use client"
 
 import { useEffect, useState } from "react";
-import { getNews } from "@/api/news";
 import Marquee from "react-fast-marquee";
 
 type News = {

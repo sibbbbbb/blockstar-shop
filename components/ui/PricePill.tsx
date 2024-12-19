@@ -1,4 +1,4 @@
-export const PricePill: React.FC<{ price: number }> = ({ price }) => {
+export const PricePill: React.FC<{ price: number, paddingClass?: string }> = ({ price, paddingClass = "px-2" }) => {
   function formatPrice(price: number) {
     // Return price with 0 decimals without ARS
     return price.toLocaleString("en-AR", {
@@ -10,7 +10,7 @@ export const PricePill: React.FC<{ price: number }> = ({ price }) => {
     });
   }
   return (
-    <div className="flex items-center justify-center bg-gray-200 text-black px-2 rounded-full ">
+    <div className={`flex justify-center items-center text-base font-helvetica font-bold bg-gray-200 text-black rounded-full w-[5.4rem] h-7 ${paddingClass}`}>
       <span className="text-base font-semibold mt-1">
         {formatPrice(Number(price))}
       </span>

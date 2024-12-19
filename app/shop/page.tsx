@@ -3,6 +3,7 @@ import Link from 'next/link';
 import Image from "next/image";
 import { useState, useEffect } from 'react';
 import { PricePill } from '@/components/ui/PricePill';
+import LoadingAnimation from "@/components/ui/LoadingAnimation";
 
 type Variant = {
     inventory_quantity: number;
@@ -69,7 +70,7 @@ const ShopIndex: React.FC = () => {
                             }
                         </div>
                     ) 
-                    : <span>Loading</span>
+                    : <LoadingAnimation />
                 }
         </div>
     );

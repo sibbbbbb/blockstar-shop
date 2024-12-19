@@ -9,10 +9,6 @@ import Image from "next/image";
 import NewsSlider from "@/components/ui/NewsSlider";
 import { usePathname, useParams } from 'next/navigation';
 
-interface ShopLayoutProps {
-  children: ReactNode;
-}
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -20,11 +16,9 @@ export default function RootLayout({
 }>) {
   const pathname = usePathname();
   const { id: queryId } = useParams();
-
-  console.log(pathname)
   
   const getHiddenIcons = () => {
-    if (pathname === '/shop') ['star']
+    if (pathname === '/shop') return ['star']
     if (pathname.startsWith('/shop') && queryId) return []
     return ['star']
   }
@@ -59,7 +53,7 @@ export default function RootLayout({
           icons.map((icon, index) => {
             if (hiddenIcons.includes(icon.name)) return null
             return (
-              <button key={index}>
+              <button key={index} className="cursor-pointer">
                 <Image src={icon.icon} alt={icon.name} />
               </button>
             )
