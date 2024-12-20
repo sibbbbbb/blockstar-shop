@@ -2,8 +2,10 @@
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import { items } from "../items";
-import price from "/public/icons/price.svg";
 import car from "/public/icons/car.svg";
+import trash from "/public/icons/trash.svg";
+import bigcar from "/public/icons/bigcar.svg";
+import close from "/public/icons/close-x.svg";
 import { PricePill } from "@/components/ui/PricePill";
 import LoadingAnimation from "@/components/ui/LoadingAnimation";
 import { useState, useEffect } from "react";
@@ -25,16 +27,17 @@ type Product = {
   title: string;
   image: Img;
   price: number;
-  variants: Variant[];
+  quantity: number; // Nueva propiedad para manejar cantidades
 };
 
 const ItemDetail: React.FC = () => {
   const { id: queryId } = useParams();
   const [product, setProduct] = useState<Product>();
   const [error, setError] = useState<boolean>(false);
+  const [cart, setCart] = useState<Product[]>([]);
+  const [isSidebarOpen, setSidebarOpen] = useState(false);
 
   const item = items[0];
-
   const value = Number(localStorage.getItem("cant"));
   const [cant, setCant] = useState(value ?? 1);
 
@@ -49,11 +52,52 @@ const ItemDetail: React.FC = () => {
   };
 
   const handleAdd = () => {
-    localStorage.setItem("cant", cant.toString());
+    if (!product) return;
+
+    // Obtener cantidad almacenada en localStorage (por defecto 0 si no existe)
+    const storedQuantity = Number(localStorage.getItem("cant")) || 0;
+
+    setCart((prevCart) => {
+      const existingItemIndex = prevCart.findIndex(
+        (item) => item.id === product.id
+      );
+
+      if (existingItemIndex >= 0) {
+        // Si el producto ya está en el carrito, actualizamos la cantidad
+        const updatedCart = prevCart.map((item, index) =>
+          index === existingItemIndex
+            ? { ...item, quantity: item.quantity + cant }
+            : item
+        );
+
+        // Actualizamos localStorage con la nueva cantidad
+        localStorage.setItem("cant", (storedQuantity + cant).toString());
+
+        return updatedCart;
+      }
+
+      // Si no está, lo agregamos al carrito con la cantidad seleccionada
+      const newItem = { ...product, quantity: cant };
+
+      // Guardamos la nueva cantidad en localStorage
+      localStorage.setItem("cant", (storedQuantity + cant).toString());
+
+      return [...prevCart, newItem];
+    });
+
+    setSidebarOpen(true); // Abrimos el sidebar
+  };
+
+  const calculateTotal = () => {
+    return cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
+  };
+
+  const handleRemove = (id: number) => {
+    setCart((prevCart) => prevCart.filter((item) => item.id !== id));
   };
 
   const handleBuy = () => {
-    console.log("compraste " + cant + " " + item.name);
+    console.log("Comprado");
   };
 
   useEffect(() => {
@@ -81,12 +125,12 @@ const ItemDetail: React.FC = () => {
             width: product.image.width,
             alt: product.image.alt,
           },
-          variants: product.variants,
           price: product.variants.reduce(
             (acc: number, curr: Variant) =>
               curr.price > acc ? curr.price : acc,
             0
           ),
+          quantity: 1, // Por defecto, cantidad inicial 1
         };
 
         return setProduct(formatedProduct);
@@ -111,7 +155,7 @@ const ItemDetail: React.FC = () => {
           </div>
           <div className="flex md:relative w-[100vw] justify-center md:justify-start">
             {/* Nombre del producto */}
-            <div className="md:ml-[50%] md:mt-[40vh] mt-5 flex flex-col">
+            <div className="md:ml-[52%] md:mt-[37vh] mt-5 flex flex-col">
               <h1 className="text-base lg:text-3xl font-bold text-center md:text-left">
                 {product.title.toUpperCase()}
               </h1>
@@ -126,12 +170,8 @@ const ItemDetail: React.FC = () => {
                     <button onClick={handlePlus}>+</button>
                   </div>
                 </div>
-                {/* Stock si quedan menos de 5 */}
-                {/* <p className="text-base font-bold my-1">
-                    {item.stock < 6 && `Ultimas: ${item.stock}`}
-                  </p> */}
                 <div className="flex justify-between my-4 items-center">
-                  {/* Botones compra */}
+                  {/* Botón agregar */}
                   <button
                     className="flex justify-between p-4 items-center font-bold text-base text-white w-full h-11 border-[1px] border-white rounded bg-black"
                     onClick={handleAdd}
@@ -139,23 +179,91 @@ const ItemDetail: React.FC = () => {
                     <p>agregar</p>
                     <Image src={car} alt="carrito" width={18} height={18} />
                   </button>
-                  {/* <button
-                  className="flex justify-between p-4 items-center font-bold text-base text-white w-[11.8rem] h-11 border-[1px] border-white rounded bg-black"
-                  onClick={handleBuy}
-                  >
-                  <p>comprar</p>
-                  <Image src={price} alt="precio" width={10} height={10} />
-                  </button> */}
                 </div>
               </div>
             </div>
-            {/* Stock si quedan menos de 5 */}
-            <p className="text-base font-bold my-1">
-              {item.stock < 6 && `Ultimas: ${item.stock}`}
-            </p>
           </div>
         </div>
       )}
+
+      {/* Sidebar */}
+      <div
+        className={`fixed top-0 right-0 h-full bg-[#111111] shadow-lg transition-transform transform text-sm md:text-base ${
+          isSidebarOpen ? "translate-x-0" : "translate-x-full"
+        } w-full md:w-[400px] z-50`}
+      >
+        <div className="p-4 flex justify-between items-center border-b-2 border-[#333333]">
+          <Image
+            src={bigcar}
+            alt="carrito"
+            width={30}
+            height={30}
+            className="opacity-35"
+          />
+          <button
+            className="text-white font-bold"
+            onClick={() => setSidebarOpen(false)}
+          >
+            <Image src={close} alt="Cerrar" width={20} height={20} />
+          </button>
+        </div>
+        <div className="p-4 overflow-y-auto">
+          {cart.length === 0 ? (
+            <p className="text-white">Tu carrito está vacío</p>
+          ) : (
+            cart.map((item) => (
+              <div
+                key={item.id}
+                className="flex justify-between items-center mb-4 border-b border-[#333333] pb-2"
+              >
+                <div>
+                  <Image
+                    src={item.image.src}
+                    alt={item.image.alt}
+                    width={150}
+                    height={150}
+                    className="rounded"
+                  />
+                </div>
+                <div>
+                  <p className="text-white font-bold mb-2">{item.title}</p>
+                  <div className="flex justify-between items-center ">
+                    <div>
+                      <p>Cantidad: {item.quantity}</p>
+                      <p>${(item.price * item.quantity).toFixed(2)}</p>
+                    </div>
+                    <button onClick={() => handleRemove(item.id)}>
+                      <Image
+                        src={trash}
+                        alt="Eliminar"
+                        width={20}
+                        height={20}
+                      />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))
+          )}
+          <div className="fixed bottom-0 left-0 w-full p-4 border-t">
+            <div className="flex justify-between items-center mb-5">
+              <span className="text-lg font-semibold">Total estimado:</span>
+              <span className="text-lg font-bold">
+                ${calculateTotal().toFixed(2)}
+              </span>
+            </div>
+            <button
+              className="flex justify-between w-full bg-[#D9D9D9] text-black p-4 rounded-md font-bold hover:bg-white"
+              onClick={handleBuy}
+            >
+              comprar
+            </button>
+            <p className=" text-sm  mt-5">
+              (envio, impuestos y descuentos se calculan en el check out)
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
