@@ -143,15 +143,16 @@ const ItemDetail: React.FC = () => {
       {error && <span>Error</span>}
       {!product && !error && <LoadingAnimation />}
       {product && (
-        <div className="flex flex-col h-screen w-screen text-white items-center justify-center">
+        <div className="flex flex-col h-screen-dvh w-screen text-white items-center justify-center">
           {/* Imagen */}
           <div className="md:absolute">
+            <div className="relative w-[25rem] h-[25rem] md:w-[40rem] md:h-[40rem]">
             <Image
               src={product.image.src}
               alt={product.image.alt}
-              width={338}
-              height={487}
-            />
+              fill
+              />
+              </div>
           </div>
           <div className="flex md:relative w-[100vw] justify-center md:justify-start">
             {/* Nombre del producto */}
@@ -170,11 +171,11 @@ const ItemDetail: React.FC = () => {
                     <button onClick={handlePlus}>+</button>
                   </div>
                 </div>
-                <div className="flex justify-between my-4 items-center">
+                <div className="flex justify-between my-4 items-center " onClick={handleAdd}>
                   {/* Botón agregar */}
                   <button
                     className="flex justify-between p-4 items-center font-bold text-base text-white w-full h-11 border-[1px] border-white rounded bg-black"
-                    onClick={handleAdd}
+
                   >
                     <p>agregar</p>
                     <Image src={car} alt="carrito" width={18} height={18} />

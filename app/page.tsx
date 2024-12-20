@@ -65,7 +65,7 @@ export default function Home() {
       <NewsSlider />
       <div className="absolute top-16 md:top-[45%] w-full flex flex-col md:flex-row items-center justify-start md:justify-center gap-x-40 gap-y-4">
         <div className="relative w-[12rem] md:w-[8rem] h-[12rem] md:h-[8rem]">
-          <Image src="/logos/B RELLENO.svg" alt="Blockstar" fill />
+          <Image src="/logos/B RELLENO.svg" alt="Blockstar logo relleno" fill />
         </div>
         <TimeLeft />
         {showInput ? (
@@ -86,7 +86,7 @@ export default function Home() {
                 className="flex items-start md:items-center justify-center w-6 md:w-10 h-full cursor-pointer"
               >
                 <div className="relative w-[2rem] md:w-[1rem] h-[2rem] md:h-[1rem]">
-                  <Image src="/icons/arrow-right.svg" alt="Blockstar" fill />
+                  <Image src="/icons/arrow-right.svg" alt="Flecha derecha" fill />
                 </div>
               </button>
             </div>
@@ -107,14 +107,14 @@ export default function Home() {
               unite al club
             </span>
             <div className="relative w-[2rem] md:w-[1rem] h-[2rem] md:h-[1rem]">
-              <Image src="/icons/arrow-right.svg" alt="Blockstar" fill />
+              <Image src="/icons/arrow-right.svg" alt="Flecha derecha" fill />
             </div>
           </div>
         )}
       </div>
       <div className="absolute text-white -bottom-32 -right-28 md:-bottom-64 md:-right-48">
         <div className="relative h-[20rem] sm:h-[20rem] md:h-[40rem] w-[20rem] sm:w-[20rem] md:w-[40rem]">
-          <Image src="/logos/B OUTLINE.svg" alt="Blockstar logo" fill />
+          <Image src="/logos/B OUTLINE.svg" alt="Blockstar logo outline" fill />
         </div>
       </div>
     </div>

@@ -56,7 +56,7 @@ const ShopIndex: React.FC = () => {
   }, []);
 
   return (
-    <div className="relative flex flex-col h-screen w-screen text-white items-center justify-center">
+    <div className="relative flex flex-col h-screen-dvh w-screen text-white items-center justify-center">
       {products.length > 0 ? (
         <div className="absolute grid  grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 top-[15%] w-[60%] ">
           {products.map(({ id, title, image, price }, index) => (
@@ -67,7 +67,7 @@ const ShopIndex: React.FC = () => {
               >
                 <Image
                   src={image.src}
-                  alt={image.alt}
+                  alt={title}
                   width={image.width}
                   height={image.height}
                 />
