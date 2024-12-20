@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import b1 from "/public/logos/b-white.svg";
 import b2 from "/public/logos/b-black.svg";
@@ -7,7 +7,7 @@ import flag from "/public/icons/flag.svg";
 import bigcar from "/public/icons/bigcar.svg";
 import Image from "next/image";
 import NewsSlider from "@/components/ui/NewsSlider";
-import { usePathname, useParams } from 'next/navigation';
+import { usePathname, useParams } from "next/navigation";
 
 export default function RootLayout({
   children,
@@ -16,29 +16,28 @@ export default function RootLayout({
 }>) {
   const pathname = usePathname();
   const { id: queryId } = useParams();
-  
+
   const getHiddenIcons = () => {
-    if (pathname === '/shop') return ['star']
-    if (pathname.startsWith('/shop') && queryId) return []
-    return ['star']
-  }
+    if (pathname === "/shop") return ["star"];
+    if (pathname.startsWith("/shop") && queryId) return [];
+    return ["star"];
+  };
 
   const hiddenIcons = getHiddenIcons();
   const icons = [
     {
       icon: star,
-      name: 'star',
+      name: "star",
     },
     {
       icon: bigcar,
-      name: 'car',
+      name: "car",
     },
     {
       icon: flag,
-      name: 'flag',
+      name: "flag",
     },
-  ]
-
+  ];
 
   return (
     <div className="h-[100vh]">
@@ -46,22 +45,27 @@ export default function RootLayout({
         newsClassName="italic opacity-35 !h-7 text-[12px]"
         containerClassName="!top-8 !border-y-[1px] !py-0 !h-7  "
       />
-      <Image className="absolute top-0 left-0 z-10" src={b1} alt="b-white" />
-      <Image className="absolute bottom-0 right-0" src={b2} alt="b-black" />
-      <div className="flex flex-col h-screen absolute items-center justify-center bg-black-200 ml-20 pt-10 space-y-14">
-        {
-          icons.map((icon, index) => {
-            if (hiddenIcons.includes(icon.name)) return null
-            return (
-              <button key={index} className="cursor-pointer">
-                <Image src={icon.icon} alt={icon.name} />
-              </button>
-            )
-          })
-        }
+      <Image
+        className="absolute top-0 left-0 z-10 w-[150px] h-[150px] lg:w-[225px] lg:h-[225px]"
+        src={b1}
+        alt="b-white"
+      />
+      <Image
+        className="absolute bottom-0 right-0 w-[150px] h-[150px] lg:w-[225px] lg:h-[225px]"
+        src={b2}
+        alt="b-black"
+      />
+      <div className="flex flex-col h-screen absolute items-center justify-center bg-black-200 ml-5 md:ml-20 pt-10 space-y-14">
+        {icons.map((icon, index) => {
+          if (hiddenIcons.includes(icon.name)) return null;
+          return (
+            <button key={index} className="cursor-pointer">
+              <Image src={icon.icon} alt={icon.name} />
+            </button>
+          );
+        })}
       </div>
       <div className="z-20">{children}</div>
     </div>
   );
 }
-

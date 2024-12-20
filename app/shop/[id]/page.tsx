@@ -95,13 +95,13 @@ const ItemDetail: React.FC = () => {
   }, [queryId]);
 
   return (
-    <div className="flex flex-col h-screen w-screen text-white items-center justify-center ">
+    <div>
       {error && <span>Error</span>}
       {!product && !error && <LoadingAnimation />}
       {product && (
         <div className="flex flex-col h-screen w-screen text-white items-center justify-center">
           {/* Imagen */}
-          <div className="absolute">
+          <div className="md:absolute">
             <Image
               src={product.image.src}
               alt={product.image.alt}
@@ -109,42 +109,44 @@ const ItemDetail: React.FC = () => {
               height={487}
             />
           </div>
-          <div className="flex ml-[40vw] mt-[45vh] relative">
-            <div>
-              {/* Nombre del producto */}
-              <h1 className="text-3xl font-bold">
+          <div className="flex md:relative w-[100vw] justify-center md:justify-start">
+            {/* Nombre del producto */}
+            <div className="md:ml-[50%] md:mt-[40vh] mt-5 flex flex-col">
+              <h1 className="text-base lg:text-3xl font-bold text-center md:text-left">
                 {product.title.toUpperCase()}
               </h1>
-              <div className="flex justify-between my-4 items-center ">
-                {/* Precio */}
-                <PricePill price={product.price} paddingClass="px-4 py-1" />
-                {/* Botones cantidad */}
-                <div className="flex justify-around items-center font-bold text-base text-white rounded-full w-28 h-8 border-[1px] border-white ">
-                  <button onClick={handleMinus}>-</button>
-                  <p>{cant}</p>
-                  <button onClick={handlePlus}>+</button>
+              <div className="w-[15rem] ">
+                <div className="flex justify-between my-4 items-center ">
+                  {/* Precio */}
+                  <PricePill price={product.price} paddingClass="px-4 py-1" />
+                  {/* Botones cantidad */}
+                  <div className="flex justify-around items-center font-bold text-base text-white rounded-full w-28 h-8 border-[1px] border-white ">
+                    <button onClick={handleMinus}>-</button>
+                    <p>{cant}</p>
+                    <button onClick={handlePlus}>+</button>
+                  </div>
                 </div>
-              </div>
-              {/* Stock si quedan menos de 5 */}
-              {/* <p className="text-base font-bold my-1">
+                {/* Stock si quedan menos de 5 */}
+                {/* <p className="text-base font-bold my-1">
                     {item.stock < 6 && `Ultimas: ${item.stock}`}
                   </p> */}
-              <div className="flex space-x-2">
-                {/* Botones compra */}
-                <button
-                  className="flex justify-between p-4 items-center font-bold text-base text-white w-[11rem] h-11 border-[1px] border-white rounded bg-black"
-                  onClick={handleAdd}
-                >
-                  <p>agregar</p>
-                  <Image src={car} alt="carrito" width={18} height={18} />
-                </button>
-                <button
-                  className="flex justify-between p-4 items-center font-bold text-base text-white w-[11rem] h-11 border-[1px] border-white rounded bg-black"
+                <div className="flex justify-between my-4 items-center">
+                  {/* Botones compra */}
+                  <button
+                    className="flex justify-between p-4 items-center font-bold text-base text-white w-full h-11 border-[1px] border-white rounded bg-black"
+                    onClick={handleAdd}
+                  >
+                    <p>agregar</p>
+                    <Image src={car} alt="carrito" width={18} height={18} />
+                  </button>
+                  {/* <button
+                  className="flex justify-between p-4 items-center font-bold text-base text-white w-[11.8rem] h-11 border-[1px] border-white rounded bg-black"
                   onClick={handleBuy}
-                >
+                  >
                   <p>comprar</p>
                   <Image src={price} alt="precio" width={10} height={10} />
-                </button>
+                  </button> */}
+                </div>
               </div>
             </div>
             {/* Stock si quedan menos de 5 */}
