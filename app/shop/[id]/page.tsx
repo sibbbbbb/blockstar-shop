@@ -2,12 +2,10 @@
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import car from "/public/icons/car.svg";
-import trash from "/public/icons/trash.svg";
-import bigcar from "/public/icons/bigcar.svg";
-import close from "/public/icons/close-x.svg";
 import { PricePill } from "@/components/ui/PricePill";
 import LoadingAnimation from "@/components/ui/LoadingAnimation";
 import { useState, useEffect } from "react";
+import { useCart } from "@/app/context/CartContext";
 
 type Img = {
   src: string;
@@ -19,19 +17,18 @@ type Img = {
 type Product = {
   id: number;
   title: string;
-  image: Img;
+  images: Img[];
   price: number;
   stock: number;
   quantity: number;
 };
 
 const ItemDetail: React.FC = () => {
+  const { addToCart } = useCart();
   const { id: queryId } = useParams();
   const [product, setProduct] = useState<Product>();
   const [error, setError] = useState<boolean>(false);
   const [cant, setCant] = useState<number>(1);
-  const [cart, setCart] = useState<Product[]>([]);
-  const [isSidebarOpen, setSidebarOpen] = useState(false);
 
   const handlePlus = () => {
     if (!product) return;
@@ -45,55 +42,9 @@ const ItemDetail: React.FC = () => {
     if (cant > 1) setCant(cant - 1);
   };
 
-  const handleAdd = (id: number) => {
-    if (!product) return;
-
-    // Obtener cantidad almacenada en localStorage (por defecto 0 si no existe)
-    const storedQuantity = Number(localStorage.getItem("cant")) || 0;
-
-    setCart((prevCart) => {
-      const existingItemIndex = prevCart.findIndex(
-        (item) => item.id === id
-      );
-
-      if (existingItemIndex >= 0) {
-        // Si el producto ya está en el carrito, actualizamos la cantidad
-        const updatedCart = prevCart.map((item, index) =>
-          index === existingItemIndex
-            ? { ...item, quantity: item.quantity + cant }
-            : item
-        );
-
-        // Actualizamos localStorage con la nueva cantidad
-        localStorage.setItem("cant", (storedQuantity + cant).toString());
-
-        return updatedCart;
-      }
-
-      // Si no está, lo agregamos al carrito con la cantidad seleccionada
-      const newItem = { ...product, quantity: cant };
-
-      // Guardamos la nueva cantidad en localStorage
-      localStorage.setItem("cant", (storedQuantity + cant).toString());
-
-      return [...prevCart, newItem];
-    });
-
-    setSidebarOpen(true); // Abrimos el sidebar
+  const handleAdd = (product: Product) => {
+    addToCart({ ...product, quantity: cant });
   };
-
-  const calculateTotal = () => {
-    return cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
-  };
-
-  const handleRemove = (id: number) => {
-    setCart((prevCart) => prevCart.filter((item) => item.id !== id));
-  };
-
-  const handleBuy = () => {
-    console.log("Comprado");
-  };
-
 
   useEffect(() => {
     if (!queryId) {
@@ -101,10 +52,10 @@ const ItemDetail: React.FC = () => {
       return;
     }
 
-    fetch('/api/products/details', {
-      method: 'POST',
+    fetch("/api/products/details", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({ gid: `gid://shopify/Product/${queryId}` }),
     })
@@ -117,7 +68,6 @@ const ItemDetail: React.FC = () => {
         }
       })
       .catch(() => setError(true));
-
   }, [queryId]);
 
   return (
@@ -129,21 +79,19 @@ const ItemDetail: React.FC = () => {
           {/* Imagen */}
           <div className="md:absolute">
             <div className="relative w-[25rem] h-[25rem] md:w-[40rem] md:h-[40rem]">
-            <Image
-              src={product.image.src}
-              alt={product.image.alt}
-              // width={product.image.width}
-              // height={product.image.height}
-              sizes="(max-width: 768px) 100vw, 768px"
-              fill
-              priority
+              <Image
+                src={product.images[0].src}
+                alt={product.title}
+                sizes="(max-width: 768px) 100vw, 768px"
+                fill
+                priority
               />
-              </div>
+            </div>
           </div>
           <div className="flex md:relative w-[100vw] justify-center md:justify-start">
             {/* Nombre del producto */}
             <div className="md:ml-[52%] md:mt-[37vh] mt-5 flex flex-col">
-              <h1 className="text-base lg:text-3xl font-bold text-center md:text-left">
+              <h1 className="text-base lg:text-3xl font-bold text-center md:text-left mix-blend-difference">
                 {product.title.toUpperCase()}
               </h1>
               <div className="w-[15rem] ">
@@ -157,98 +105,29 @@ const ItemDetail: React.FC = () => {
                     <button onClick={handlePlus}>+</button>
                   </div>
                 </div>
-                <div className="flex justify-between my-4 items-center " onClick={() => handleAdd(product.id)}>
+                <div
+                  className="flex justify-between my-4 items-center "
+                  onClick={() => {
+                    if (product.stock > 0) handleAdd(product);
+                  }}
+                >
                   {/* Botón agregar */}
-                  <button
-                    className="flex justify-between p-4 items-center font-bold text-base text-white w-full h-11 border-[1px] border-white rounded bg-black"
-                  >
-                    <p>agregar</p>
-                    <Image src={car} alt="carrito" width={18} height={18} />
-                  </button>
+                  {product.stock > 0 ? (
+                    <button className="flex justify-between p-4 items-center font-bold text-base text-white w-full h-11 border-[1px] border-white rounded bg-black">
+                      <p>agregar</p>
+                      <Image src={car} alt="carrito" width={18} height={18} />
+                    </button>
+                  ) : (
+                    <button className="flex justify-center p-4 items-center font-bold text-base text-white w-full h-11 border-[1px] border-white rounded bg-black">
+                      <p>sold out :)</p>
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
           </div>
         </div>
       )}
-            {/* Sidebar */}
-            <div
-        className={`fixed top-0 right-0 h-full bg-[#111111] shadow-lg transition-transform transform text-sm md:text-base ${
-          isSidebarOpen ? "translate-x-0" : "translate-x-full"
-        } w-full md:w-[400px] z-50`}
-      >
-        <div className="p-4 flex justify-between items-center border-b-2 border-[#333333]">
-          <Image
-            src={bigcar}
-            alt="carrito"
-            width={30}
-            height={30}
-            className="opacity-35"
-          />
-          <button
-            className="text-white font-bold"
-            onClick={() => setSidebarOpen(false)}
-          >
-            <Image src={close} alt="Cerrar" width={20} height={20} />
-          </button>
-        </div>
-        <div className="p-4 overflow-y-auto">
-          {cart.length === 0 ? (
-            <p className="text-white">Tu carrito está vacío</p>
-          ) : (
-            cart.map((item) => (
-              <div
-                key={item.id}
-                className="flex justify-between items-center mb-4 border-b border-[#333333] pb-2"
-              >
-                <div>
-                  <Image
-                    src={item.image.src}
-                    alt={item.image.alt}
-                    width={150}
-                    height={150}
-                    className="rounded"
-                  />
-                </div>
-                <div>
-                  <p className="text-white font-bold mb-2">{item.title}</p>
-                  <div className="flex justify-between items-center ">
-                    <div>
-                      <p>Cantidad: {item.quantity}</p>
-                      <p>${(item.price * item.quantity).toFixed(2)}</p>
-                    </div>
-                    <button onClick={() => handleRemove(item.id)}>
-                      <Image
-                        src={trash}
-                        alt="Eliminar"
-                        width={20}
-                        height={20}
-                      />
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ))
-          )}
-          <div className="fixed bottom-0 left-0 w-full p-4 border-t">
-            <div className="flex justify-between items-center mb-5">
-              <span className="text-lg font-semibold">Total estimado:</span>
-              <span className="text-lg font-bold">
-                ${calculateTotal().toFixed(2)}
-              </span>
-            </div>
-            <button
-              className="flex justify-between w-full bg-[#D9D9D9] text-black p-4 rounded-md font-bold hover:bg-white"
-              onClick={handleBuy}
-            >
-              comprar
-            </button>
-            <p className=" text-sm  mt-5">
-              (envio, impuestos y descuentos se calculan en el check out)
-            </p>
-          </div>
-        </div>
-      </div>
     </div>
   );
 };

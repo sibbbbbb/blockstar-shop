@@ -4,13 +4,15 @@ import React, { useState, ChangeEvent, useRef, useEffect } from "react";
 import Image from "next/image";
 import NewsSlider from "@/components/ui/NewsSlider";
 import TimeLeft from "@/components/ui/TimeLeft";
+// import { redirect } from 'next/navigation'
 
 type Message = {
   message: string;
   color: string;
 };
 
-export default function Home() {
+export default function Home () {
+  // redirect('/shop')
   const [showMessage, setShowMessage] = useState<Message | null>(null);
   const [email, setEmail] = useState<string>("");
   const [showInput, setShowInput] = useState(false);

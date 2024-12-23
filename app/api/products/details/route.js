@@ -11,7 +11,7 @@ export async function POST (request) {
         title
         description
         totalInventory
-        images(first: 1) {
+        images(first: 10) {
           edges {
             node {
               url
@@ -21,7 +21,7 @@ export async function POST (request) {
             }
           }
         }
-        variants(first: 1) {
+        variants(first: 10) {
           edges {
             node {
               id
@@ -47,12 +47,12 @@ export async function POST (request) {
   const formattedProduct = {
     id: data.product.variants.edges[0]?.node.id.split('/').pop(),
     title: data.product.title,
-    image: {
-      src: data.product.images.edges[0]?.node.url,
-      alt: data.product.images.edges[0]?.node.altText,
-      height: data.product.images.edges[0]?.node.height,
-      width: data.product.images.edges[0]?.node.width
-    },
+    images: data.product.images.edges.map(({ node }) => ({
+      src: node.url,
+      alt: node.altText,
+      height: node.height,
+      width: node.width
+    })),
     stock: data.product.totalInventory,
     price: data.product.variants.edges[0]?.node.price.amount
   }

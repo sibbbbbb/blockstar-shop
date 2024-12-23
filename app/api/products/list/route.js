@@ -9,6 +9,7 @@ export async function GET () {
             id
             title
             description
+            totalInventory
             images(first: 1) {
               edges {
                 node {
@@ -45,6 +46,7 @@ export async function GET () {
   const formattedProducts = data.products.edges.map(({ node }) => ({
     id: node.id.split('/').pop(),
     title: node.title,
+    stock: node.totalInventory,
     image: {
       src: node.images.edges[0]?.node.url,
       alt: node.images.edges[0]?.node.altText,

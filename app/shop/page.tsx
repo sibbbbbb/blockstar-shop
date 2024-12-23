@@ -22,6 +22,7 @@ type Product = {
   title: string;
   image: Img;
   price: number;
+  stock: number;
   variants: Variant[];
 };
 
@@ -39,8 +40,8 @@ const ShopIndex: React.FC = () => {
   return (
     <div className="relative flex flex-col h-screen-dvh w-screen text-white items-center justify-center">
       {products.length > 0 ? (
-        <div className="absolute grid  grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 top-[15%] w-[60%] ">
-          {products.map(({ id, title, image, price }, index) => (
+        <div className="absolute grid  grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 top-[15%] w-[60%] gap-x-5">
+          {products.map(({ id, title, image, price, stock }, index) => (
             <Link key={index} href={`/shop/${id}`}>
               <div
                 className="flex flex-col items-center font-helvetica p-4 hover:rounded-lg hover:border hover:border-gray-200 "
@@ -56,7 +57,9 @@ const ShopIndex: React.FC = () => {
                 <span className="uppercase font-semibold mt-5 mb-2 text-center text-sm md:text-base">
                   {title}
                 </span>
-                <PricePill price={price} />
+                {
+                  stock > 0 ? <PricePill price={price} /> : <span className="uppercase font-helvetica font-bold text-gray-500">Sold Out</span>
+                }
               </div>
             </Link>
           ))}
