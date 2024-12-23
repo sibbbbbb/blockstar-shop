@@ -10,6 +10,7 @@
     "test": "standard && next dev"
   },
   "dependencies": {
+    "@shopify/storefront-api-client": "^1.0.3",
     "@supabase/supabase-js": "^2.47.5",
     "next": "15.0.4",
     "react": "^19.0.0",
