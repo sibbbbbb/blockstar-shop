@@ -31,27 +31,8 @@ const ShopIndex: React.FC = () => {
   useEffect(() => {
     fetch("/api/products/list")
       .then((res) => res.json())
-      .then(({ products }) => {
-        const formatedProducts = products.map(
-          ({ id, title, variants, image }: Product) => {
-            return {
-              id,
-              title,
-              image: {
-                src: image.src,
-                height: image.height,
-                width: image.width,
-                alt: image.alt,
-              },
-              price: variants.reduce(
-                (acc: number, curr: Variant) =>
-                  curr.price > acc ? curr.price : acc,
-                0
-              ),
-            };
-          }
-        );
-        setProducts(formatedProducts);
+      .then((products) => {
+        setProducts(products);
       });
   }, []);
 
@@ -70,6 +51,7 @@ const ShopIndex: React.FC = () => {
                   alt={title}
                   width={image.width}
                   height={image.height}
+                  priority
                 />
                 <span className="uppercase font-semibold mt-5 mb-2 text-center text-sm md:text-base">
                   {title}

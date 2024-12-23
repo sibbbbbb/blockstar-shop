@@ -1,7 +1,6 @@
 "use client";
 import Image from "next/image";
 import { useParams } from "next/navigation";
-import { items } from "../items";
 import car from "/public/icons/car.svg";
 import trash from "/public/icons/trash.svg";
 import bigcar from "/public/icons/bigcar.svg";
@@ -9,11 +8,6 @@ import close from "/public/icons/close-x.svg";
 import { PricePill } from "@/components/ui/PricePill";
 import LoadingAnimation from "@/components/ui/LoadingAnimation";
 import { useState, useEffect } from "react";
-
-type Variant = {
-  inventory_quantity: number;
-  price: number;
-};
 
 type Img = {
   src: string;
@@ -27,22 +21,22 @@ type Product = {
   title: string;
   image: Img;
   price: number;
-  quantity: number; // Nueva propiedad para manejar cantidades
+  stock: number;
+  quantity: number;
 };
 
 const ItemDetail: React.FC = () => {
   const { id: queryId } = useParams();
   const [product, setProduct] = useState<Product>();
   const [error, setError] = useState<boolean>(false);
+  const [cant, setCant] = useState<number>(1);
   const [cart, setCart] = useState<Product[]>([]);
   const [isSidebarOpen, setSidebarOpen] = useState(false);
 
-  const item = items[0];
-  const value = Number(localStorage.getItem("cant"));
-  const [cant, setCant] = useState(value ?? 1);
-
   const handlePlus = () => {
-    if (cant < item.stock) {
+    if (!product) return;
+
+    if (cant < product.stock) {
       setCant(cant + 1);
     }
   };
@@ -51,7 +45,7 @@ const ItemDetail: React.FC = () => {
     if (cant > 1) setCant(cant - 1);
   };
 
-  const handleAdd = () => {
+  const handleAdd = (id: number) => {
     if (!product) return;
 
     // Obtener cantidad almacenada en localStorage (por defecto 0 si no existe)
@@ -59,7 +53,7 @@ const ItemDetail: React.FC = () => {
 
     setCart((prevCart) => {
       const existingItemIndex = prevCart.findIndex(
-        (item) => item.id === product.id
+        (item) => item.id === id
       );
 
       if (existingItemIndex >= 0) {
@@ -100,42 +94,30 @@ const ItemDetail: React.FC = () => {
     console.log("Comprado");
   };
 
+
   useEffect(() => {
     if (!queryId) {
       setError(true);
       return;
     }
 
-    fetch("/api/products/details", {
-      method: "POST",
+    fetch('/api/products/details', {
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ productId: queryId }),
+      body: JSON.stringify({ gid: `gid://shopify/Product/${queryId}` }),
     })
       .then((res) => res.json())
-      .then(({ product, error = false }) => {
-        if (error) return setError(true);
-        const formatedProduct: Product = {
-          id: product.id,
-          title: product.title,
-          image: {
-            src: product.image.src,
-            height: product.image.height,
-            width: product.image.width,
-            alt: product.image.alt,
-          },
-          price: product.variants.reduce(
-            (acc: number, curr: Variant) =>
-              curr.price > acc ? curr.price : acc,
-            0
-          ),
-          quantity: 1, // Por defecto, cantidad inicial 1
-        };
+      .then((product) => {
+        setProduct(product);
 
-        return setProduct(formatedProduct);
+        if (product.stock === 0) {
+          setCant(0);
+        }
       })
       .catch(() => setError(true));
+
   }, [queryId]);
 
   return (
@@ -150,7 +132,11 @@ const ItemDetail: React.FC = () => {
             <Image
               src={product.image.src}
               alt={product.image.alt}
+              // width={product.image.width}
+              // height={product.image.height}
+              sizes="(max-width: 768px) 100vw, 768px"
               fill
+              priority
               />
               </div>
           </div>
@@ -171,11 +157,10 @@ const ItemDetail: React.FC = () => {
                     <button onClick={handlePlus}>+</button>
                   </div>
                 </div>
-                <div className="flex justify-between my-4 items-center " onClick={handleAdd}>
+                <div className="flex justify-between my-4 items-center " onClick={() => handleAdd(product.id)}>
                   {/* Botón agregar */}
                   <button
                     className="flex justify-between p-4 items-center font-bold text-base text-white w-full h-11 border-[1px] border-white rounded bg-black"
-
                   >
                     <p>agregar</p>
                     <Image src={car} alt="carrito" width={18} height={18} />
@@ -186,9 +171,8 @@ const ItemDetail: React.FC = () => {
           </div>
         </div>
       )}
-
-      {/* Sidebar */}
-      <div
+            {/* Sidebar */}
+            <div
         className={`fixed top-0 right-0 h-full bg-[#111111] shadow-lg transition-transform transform text-sm md:text-base ${
           isSidebarOpen ? "translate-x-0" : "translate-x-full"
         } w-full md:w-[400px] z-50`}
