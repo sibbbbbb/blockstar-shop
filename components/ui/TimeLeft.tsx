@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 export default function TimeLeft () {
   const [timeLeft, setTimeLeft] = useState('')
 
-  const targetDate: any = new Date('2024-12-20T20:00:00')
+  const targetDate: any = new Date('2024-12-23T20:00:00')
 
   const calculateTimeLeft = () => {
     const now: any = new Date()
