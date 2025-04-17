@@ -30,7 +30,7 @@ const ItemDetail: React.FC = () => {
   const [error, setError] = useState<boolean>(false);
   const [cant, setCant] = useState<number>(1);
   const [indexImage, setIndexImage] = useState<number>(0);
-  const [loadedImage, setLoadedImage] = useState("");
+  // const [loadedImage, setLoadedImage] = useState("");
 
   const handlePlus = () => {
     if (!product) return;
@@ -74,7 +74,7 @@ const ItemDetail: React.FC = () => {
 
   useEffect(() => {
     if (!product || !product.images || product.images.length === 0) return;
-    setLoadedImage(product.images[0].src);
+    // setLoadedImage(product.images[0].src);
 
     const interval = setInterval(() => {
       const nextIndex = (indexImage + 1) % product.images!.length;
@@ -84,7 +84,7 @@ const ItemDetail: React.FC = () => {
       fetch(nextImage)
         .then((res) => res.blob()) // Convierte la imagen en blob
         .then(() => {
-          setLoadedImage(nextImage);
+          // setLoadedImage(nextImage);
           setIndexImage(nextIndex);
         })
         .catch((err) => console.error("Error precargando imagen:", err));

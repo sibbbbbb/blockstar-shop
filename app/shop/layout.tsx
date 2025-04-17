@@ -26,7 +26,7 @@ export default function RootLayout({
     return ["home"];
   };
 
-  const getHiddenLogo = () => pathname === "/shop";
+  // const getHiddenLogo = () => pathname === "/shop";
 
   const hiddenIcons = getHiddenIcons();
   const icons = [
