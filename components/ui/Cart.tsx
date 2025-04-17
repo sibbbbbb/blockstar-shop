@@ -68,7 +68,7 @@ const Cart: React.FC = () => {
       </div>
       <div className="p-4 overflow-y-auto">
         {cart.length === 0 ? (
-          <p className="text-white">Tu carrito está vacío</p>
+          <p className="text-white font-monument">tu carrito está vacío</p>
         ) : (
           cart.map((item) => (
             <div
@@ -104,8 +104,8 @@ const Cart: React.FC = () => {
         <div className="fixed bottom-0 left-0 w-full border-t">
           <div className="flex flex-col items-start mb-5 px-4 pt-4 pb-2">
             <div className="flex justify-between items-center mb-5 w-full">
-              <span className="text-lg font-semibold">Total estimado:</span>
-              <span className="text-lg font-bold">
+              <span className="text-lg font-semibold font-monument">total estimado:</span>
+              <span className="text-lg font-bold font-monument">
                 ${calculateTotal().toFixed(2)}
               </span>
             </div>

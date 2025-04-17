@@ -38,13 +38,13 @@ const ShopIndex: React.FC = () => {
   }, []);
 
   return (
-    <div className="relative flex flex-col h-screen-dvh w-screen text-white items-center justify-center">
+    <div className="flex flex-col w-full text-white items-center justify-center">
       {products.length > 0 ? (
-        <div className="absolute grid  grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 top-[15%] w-[60%] gap-x-5">
+        <div className="absolute grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 top-[10%] w-[60%] gap-x-5 pb-10">
           {products.map(({ id, title, image, price, stock }, index) => (
             <Link key={index} href={`/shop/${id}`}>
               <div
-                className="flex flex-col items-center font-helvetica p-4 hover:rounded-lg hover:border hover:border-gray-200 "
+                className="flex flex-col items-center font-helvetica p-4 hover:rounded-lg hover:border hover:border-gray-200 bg-black-200"
                 key={index}
               >
                 <Image
@@ -53,6 +53,7 @@ const ShopIndex: React.FC = () => {
                   width={image.width}
                   height={image.height}
                   priority
+                  className="z-50"
                 />
                 <span className="uppercase font-semibold mt-5 mb-2 text-center text-sm md:text-base">
                   {title}
