@@ -59,7 +59,7 @@ const ItemDetail: React.FC = () => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ gid: `gid://shopify/Product/${queryId}` }),
+      body: JSON.stringify({ gid: queryId }),
     })
       .then((res) => res.json())
       .then((product) => {

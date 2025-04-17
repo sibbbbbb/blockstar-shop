@@ -73,7 +73,7 @@ const Cart: React.FC = () => {
           cart.map((item) => (
             <div
               key={item.id}
-              className="flex justify-start items-center mb-4 border-b border-[#333333] pb-2"
+              className="flex justify-start items-center mb-4 border-b border-[#333333] pb-2 gap-x-1"
             >
               <div>
                 <Image
