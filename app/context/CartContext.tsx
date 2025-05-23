@@ -5,7 +5,6 @@ import React, {
   useContext,
   useState,
   ReactNode,
-  useEffect,
 } from "react";
 
 // Define la estructura del producto en el carrito
@@ -53,6 +52,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
 
   // Agregar un producto al carrito
   const addToCart = async (item: CartItem) => {
+    console.log(item)
     setCart((prevCart) => {
       const existingItem = prevCart.find((i) => i.id === item.id);
       if (existingItem) {
@@ -87,28 +87,6 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
   const toggleCartVisibility = (isVisible?: boolean) => {
     setIsCartVisible(isVisible ?? !isCartVisible);
   };
-
-  useEffect(() => {
-    if (cart.length > 0) {
-      fetch("/api/checkout/update", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          cartId,
-          lineItems: cart.map(({ id, quantity }) => ({
-            merchandiseId: `gid://shopify/ProductVariant/${id}`,
-            quantity: quantity,
-          })),
-        }),
-      })
-      .then((res) => res.json())
-      .then(({ checkoutUrl }) => {
-        setCartLink(checkoutUrl);
-      });
-    }
-  }, [cart]);
 
   return (
     <CartContext.Provider
