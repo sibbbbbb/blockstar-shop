@@ -1,6 +1,6 @@
 // import shopifyClient from '@/lib/shopify'
 
-export async function POST (request) {
+export async function POST () {
   const NUBE_API = process.env.NUBE_API
   const NUBE_ACCESS_TOKEN = process.env.NUBE_ACCESS_TOKEN
   const NUBE_SUPER_USER = process.env.NUBE_SUPER_USER
