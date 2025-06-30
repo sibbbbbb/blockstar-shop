@@ -11,7 +11,6 @@ const Modal: React.FC = () => {
   const [email, setEmail] = useState("");
 
   const handleChange = (value: string, name: string) => {
-    console.log(value, name);
     switch (name) {
       case "name":
         setName(value);
@@ -48,7 +47,7 @@ const Modal: React.FC = () => {
       }`}
     >
       <div className="flex justify-center items-center h-full w-full">
-        <div className="flex flex-col p-4 w-3/12 gap-y-6 bg-black border border-white font-monument">
+        <div className="flex flex-col p-4 md:w-3/12 gap-y-6 bg-black border border-white font-monument">
           <div className="flex flex-row items-center justify-between w-full text-xl">
             <span className=" text-white font-bold">
               termina tu compra wachin
@@ -63,36 +62,36 @@ const Modal: React.FC = () => {
           <form onSubmit={redirectToBuy}>
             <div className="flex flex-col gap-y-6">
               <div className="flex flex-col items-center w-full h-full gap-y-5">
-                <div className="my-4 md:my-0 text-lg bg-white text-black w-[22rem] md:w-[25rem] h-24 md:h-10 py-1 px-4 rounded-sm">
+                <div className="my-4 md:my-0 text-lg bg-white text-black w-[20rem] md:w-[25rem] h-10 py-1 px-4 rounded-sm">
                   <input
                     type="text"
                     placeholder="tu nombre"
                     value={name}
                     onChange={(e) => handleChange(e.target.value, "name")}
-                    name="email"
-                    id="mail"
+                    name="name"
+                    id="name"
                     className="md:w-full md:h-full text-xl md:text-base font-bold focus:outline-none"
                   />
                 </div>
-                <div className="my-4 md:my-0 text-lg bg-white text-black w-[22rem] md:w-[25rem] h-24 md:h-10 py-1 px-4 rounded-sm">
+                <div className="my-4 md:my-0 text-lg bg-white text-black w-[20rem] md:w-[25rem] h-10 py-1 px-4 rounded-sm">
                   <input
                     type="text"
                     placeholder="tu apellido"
                     value={lastname}
                     onChange={(e) => handleChange(e.target.value, "lastname")}
-                    name="email"
-                    id="mail"
+                    name="lastname"
+                    id="lastname"
                     className="md:w-full md:h-full text-xl md:text-base font-bold focus:outline-none"
                   />
                 </div>
-                <div className="my-4 md:my-0 text-lg bg-white text-black w-[22rem] md:w-[25rem] h-24 md:h-10 py-1 px-4 rounded-sm">
+                <div className="my-4 md:my-0 text-lg bg-white text-black w-[20rem] md:w-[25rem] h-10 py-1 px-4 rounded-sm">
                   <input
                     type="email"
                     placeholder="tu mail"
                     value={email}
                     onChange={(e) => handleChange(e.target.value, "email")}
                     name="email"
-                    id="mail"
+                    id="email"
                     className="md:w-full md:h-full text-xl md:text-base font-bold focus:outline-none"
                   />
                 </div>
