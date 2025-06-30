@@ -9,7 +9,7 @@ import React, {
 } from "react";
 
 // Define la estructura del producto en el carrito
-interface UserInfo {
+interface UserInfoInterface {
   name: string;
   last_name: string;
   email: string;
@@ -17,7 +17,7 @@ interface UserInfo {
 
 // Define la estructura del contexto
 interface ModalContextType {
-  userInfo: UserInfo;
+  userInfo: UserInfoInterface;
   isModalVisible: boolean;
   clearModal: () => void;
   toggleModalVisibility: (isVisible?: boolean) => void;
@@ -30,7 +30,7 @@ const ModalContext = createContext<ModalContextType | undefined>(undefined);
 export const ModalProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  const [userInfo, setUserInfo] = useState<userInfo>({ name: "", last_name: "", email: "" });
+  const [userInfo, setUserInfo] = useState<UserInfoInterface>({ name: "", last_name: "", email: "" });
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   // Vaciar el carrito
