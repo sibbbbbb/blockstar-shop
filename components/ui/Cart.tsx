@@ -1,5 +1,6 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useCart } from "@/app/context/CartContext";
+import { useModal } from "@/app/context/ModalContext";
 import trash from "/public/icons/trash.svg";
 import bigcar from "/public/icons/bigcar.svg";
 import close from "/public/icons/close-x.svg";
@@ -9,41 +10,20 @@ const Cart: React.FC = () => {
   const {
     cart,
     isCartVisible,
-    cartLink,
     toggleCartVisibility,
     removeFromCart,
-    setCartShopifyId,
   } = useCart();
 
-  const doesShopifyCartExist = (): boolean => {
-    return localStorage.getItem("shopify-cart") !== null;
-  };
+  const { toggleModalVisibility } = useModal();
 
   const calculateTotal = () => {
     return cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
   };
 
   const handleBuy = () => {
-    window.location.href = cartLink;
+    toggleCartVisibility(false);
+    toggleModalVisibility(true);
   };
-
-  useEffect(() => {
-    if (!doesShopifyCartExist()) {
-      fetch("/api/checkout/create", {
-        method: "POST",
-      })
-        .then((res) => res.json())
-        .then(({ id }) => {
-          const cleanedId = id.split("?key=")[0];
-          localStorage.setItem("shopify-cart", cleanedId);
-          setCartShopifyId(cleanedId);
-        });
-    } else {
-      const id = localStorage.getItem("shopify-cart");
-      if (!id) return;
-      setCartShopifyId(id);
-    }
-  }, []);
 
   return (
     <div
@@ -73,7 +53,7 @@ const Cart: React.FC = () => {
           cart.map((item) => (
             <div
               key={item.id}
-              className="flex justify-start items-center mb-4 border-b border-[#333333] pb-2"
+              className="flex justify-start items-center mb-4 border-b border-[#333333] pb-2 gap-x-1"
             >
               <div>
                 <Image
@@ -111,8 +91,8 @@ const Cart: React.FC = () => {
             </div>
 
             <button
-              className="flex justify-between w-full bg-[#D9D9D9] text-black p-4 rounded-md font-bold hover:bg-white"
-              onClick={handleBuy}
+              className={`flex justify-between w-full bg-[#D9D9D9] text-black p-4 rounded-md font-bold hover:bg-white ${cart.length === 0 ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
+              onClick={() => cart.length > 0 ? handleBuy() : null}
             >
               comprar
             </button>

@@ -1,59 +1,33 @@
-import shopifyClient from '@/lib/shopify'
-
 export async function GET () {
-  const queryProducts = `
-    query {
-      products(first: 10) {
-        edges {
-          node {
-            id
-            title
-            description
-            totalInventory
-            images(first: 1) {
-              edges {
-                node {
-                  url
-                  altText
-                  width
-                  height
-                }
-              }
-            }
-            variants(first: 1) {
-              edges {
-                node {
-                  id
-                  price {
-                    amount
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
+  const NUBE_API = process.env.NUBE_API
+  const NUBE_ACCESS_TOKEN = process.env.NUBE_ACCESS_TOKEN
+  const NUBE_SUPER_USER = process.env.NUBE_SUPER_USER
+
+  const response = await fetch(`${NUBE_API}/products`, {
+    method: 'GET',
+    headers: {
+      Authentication: `bearer ${NUBE_ACCESS_TOKEN}`,
+      'User-Agent': `${NUBE_SUPER_USER}`
     }
-  `
+  })
 
-  const { data, errors } = await shopifyClient.request(queryProducts)
-
-  if (errors) {
-    console.log(errors)
-    return new Response(JSON.stringify(errors), { status: 500 })
+  if (!response.ok) {
+    throw new Error(`Error HTTP: ${response.status}`)
   }
 
-  const formattedProducts = data.products.edges.map(({ node }) => ({
-    id: node.id.split('/').pop(),
-    title: node.title,
-    stock: node.totalInventory,
+  const data = await response.json()
+
+  const formattedProducts = data.map((product) => ({
+    id: product.id,
+    title: product.name.es,
+    stock: 10,
     image: {
-      src: node.images.edges[0]?.node.url,
-      alt: node.images.edges[0]?.node.altText,
-      height: node.images.edges[0]?.node.height,
-      width: node.images.edges[0]?.node.width
+      src: product.images[0]?.src,
+      alt: `${product.images[0]?.product_id} product image`,
+      height: product.images[0]?.height,
+      width: product.images[0]?.width
     },
-    price: node.variants.edges[0]?.node.price.amount
+    price: product.variants[0]?.price
   }))
 
   return new Response(JSON.stringify(formattedProducts), { status: 200 })

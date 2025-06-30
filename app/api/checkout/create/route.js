@@ -1,24 +1,38 @@
-import shopifyClient from '@/lib/shopify'
+// import shopifyClient from '@/lib/shopify'
 
 export async function POST () {
-  const queryCart = `
-    mutation cartCreate ($input: CartInput) {
-      cartCreate (input: $input) {
-        cart {
-          id
-        }
-      }
-    }
-  `
+  const NUBE_API = process.env.NUBE_API
+  const NUBE_ACCESS_TOKEN = process.env.NUBE_ACCESS_TOKEN
+  const NUBE_SUPER_USER = process.env.NUBE_SUPER_USER
 
-  const { data, errors } = await shopifyClient.request(queryCart, {
-    variables: { input: { lines: [] } }
+  const response = await fetch(`${NUBE_API}/products/carts`, {
+    method: 'POST',
+    headers: {
+      Authentication: `bearer ${NUBE_ACCESS_TOKEN}`,
+      'User-Agent': `${NUBE_SUPER_USER}`
+    }
   })
 
-  if (errors) {
-    console.log(errors)
-    return new Response(JSON.stringify(errors), { status: 500 })
-  }
+  console.log(response)
 
-  return new Response(JSON.stringify(data.cartCreate.cart), { status: 200 })
+  // const queryCart = `
+  //   mutation cartCreate ($input: CartInput) {
+  //     cartCreate (input: $input) {
+  //       cart {
+  //         id
+  //       }
+  //     }
+  //   }
+  // `
+
+  // const { data, errors } = await shopifyClient.request(queryCart, {
+  //   variables: { input: { lines: [] } }
+  // })
+
+  // if (errors) {
+  //   console.log(errors)
+  //   return new Response(JSON.stringify(errors), { status: 500 })
+  // }
+
+  // return new Response(JSON.stringify(data.cartCreate.cart), { status: 200 })
 }

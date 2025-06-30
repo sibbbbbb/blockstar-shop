@@ -1,6 +1,8 @@
 "use client"
 
 import { CartProvider } from "@/app/context/CartContext";
+import { ModalProvider } from "@/app/context/ModalContext";
+import Modal from "@/components/ui/Modal";
 import Cart from "@/components/ui/Cart";
 import localFont from "next/font/local";
 import "./globals.css";
@@ -38,10 +40,13 @@ export default function RootLayout({
       <body
         className={`${helveticaLTStd.variable} ${MonumentGrotesk.variable} antialiased bg-black text-white`}
       >
-        <CartProvider>
-          <Cart />
-          {children}
-        </CartProvider>
+        <ModalProvider>
+          <CartProvider>
+            <Modal />
+            <Cart />
+            {children}
+          </CartProvider>
+        </ModalProvider>
       </body>
     </html>
   );

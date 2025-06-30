@@ -1,60 +1,35 @@
-import shopifyClient from '@/lib/shopify'
-
 export async function POST (request) {
+  const NUBE_API = process.env.NUBE_API
+  const NUBE_ACCESS_TOKEN = process.env.NUBE_ACCESS_TOKEN
+  const NUBE_SUPER_USER = process.env.NUBE_SUPER_USER
   const body = await request.json()
   const { gid } = body
 
-  const queryProduct = `
-    query($id: ID!) {
-      product(id: $id) {
-        id
-        title
-        description
-        totalInventory
-        images(first: 10) {
-          edges {
-            node {
-              url
-              altText
-              width
-              height
-            }
-          }
-        }
-        variants(first: 10) {
-          edges {
-            node {
-              id
-              price {
-                amount
-              }
-            }
-          }
-        }
-      }
+  const response = await fetch(`${NUBE_API}/products/${gid}`, {
+    method: 'GET',
+    headers: {
+      Authentication: `bearer ${NUBE_ACCESS_TOKEN}`,
+      'User-Agent': `${NUBE_SUPER_USER}`
     }
-  `
-
-  const { data, errors } = await shopifyClient.request(queryProduct, {
-    variables: { id: gid }
   })
 
-  if (errors) {
-    console.log(errors)
-    return new Response(JSON.stringify(errors), { status: 500 })
+  if (!response.ok) {
+    throw new Error(`Error HTTP: ${response.status}`)
   }
 
+  const data = await response.json()
+
   const formattedProduct = {
-    id: data.product.variants.edges[0]?.node.id.split('/').pop(),
-    title: data.product.title,
-    images: data.product.images.edges.map(({ node }) => ({
-      src: node.url,
-      alt: node.altText,
-      height: node.height,
-      width: node.width
+    id: data.variants[0]?.id,
+    title: data.name.es,
+    stock: data.variants[0]?.stock,
+    images: data.images.map((image) => ({
+      src: image.src,
+      alt: `${image.product_id} product image`,
+      height: image.height,
+      width: image.width
     })),
-    stock: data.product.totalInventory,
-    price: data.product.variants.edges[0]?.node.price.amount
+    price: data.variants[0]?.price
   }
 
   return new Response(JSON.stringify(formattedProduct), { status: 200 })
