@@ -18,24 +18,42 @@ type Product = {
   id: number;
   title: string;
   images: Img[];
+  sizes: Variant[];
   price: number;
   stock: number;
   quantity: number;
+};
+
+type Variant = {
+  id: number;
+  position: number;
+  stock: number;
+  price: number;
+  size: string;
+  title: string;
+  images: Img[];
 };
 
 const ItemDetail: React.FC = () => {
   const { addToCart } = useCart();
   const { id: queryId } = useParams();
   const [product, setProduct] = useState<Product>();
+  const [variant, setSelectedVariant] = useState<Variant>();
   const [error, setError] = useState<boolean>(false);
   const [cant, setCant] = useState<number>(1);
   const [indexImage, setIndexImage] = useState<number>(0);
   // const [loadedImage, setLoadedImage] = useState("");
 
+  const applyVariant = (variant: Variant) => {
+    setSelectedVariant(variant);
+    setCant(1);
+  }
+
   const handlePlus = () => {
     if (!product) return;
+    if (!variant) return;
 
-    if (cant < product.stock) {
+    if (cant < variant?.stock) {
       setCant(cant + 1);
     }
   };
@@ -44,8 +62,8 @@ const ItemDetail: React.FC = () => {
     if (cant > 1) setCant(cant - 1);
   };
 
-  const handleAdd = (product: Product) => {
-    addToCart({ ...product, quantity: cant });
+  const handleAdd = (variant: Variant) => {
+    addToCart({ ...variant, quantity: cant });
   };
 
   useEffect(() => {
@@ -64,8 +82,9 @@ const ItemDetail: React.FC = () => {
       .then((res) => res.json())
       .then((product) => {
         setProduct(product);
+        setSelectedVariant(product.sizes[0]);
 
-        if (product.stock === 0) {
+        if (product.sizes[0].stock === 0) {
           setCant(0);
         }
       })
@@ -91,7 +110,7 @@ const ItemDetail: React.FC = () => {
     }, 600);
 
     return () => clearInterval(interval);
-  }, [ product, indexImage ]);
+  }, [product, indexImage]);
 
   return (
     <div>
@@ -117,12 +136,28 @@ const ItemDetail: React.FC = () => {
               <h1 className="text-base lg:text-3xl font-bold text-center md:text-left mix-blend-difference">
                 {product.title.toUpperCase()}
               </h1>
-              <div className="w-[15rem]">
+              <div className="w-[20rem]">
+                {
+                  product.sizes.length > 1 && (
+                    <div className="flex justify-between items-center my-2 items-center w-full">
+                      <span className="text-xl font-bold font-helvetica mr-2 mix-blend-difference">Talle: {variant?.size}</span>
+                      <div className="flex justify-end items-center gap-x-2 font-helvetica">
+                        {product.sizes.map((size) => (
+                          <button key={size.id} onClick={() => applyVariant(size)} className={`${variant?.id === size.id ? 'border-white text-white' : 'border-gray-500 text-gray-500'} h-10 px-2 py-1 border-[2px] font-bold`}>
+                            <span className="relative top-[1px]">
+                              { size.size }
+                            </span>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )
+                }
                 <div className="flex justify-between my-4 items-center">
                   {/* Precio */}
                   <PricePill price={product.price} paddingClass="px-4 py-1" />
                   {/* Botones cantidad */}
-                  <div className="flex justify-around items-center font-bold text-base text-white rounded-full w-28 h-8 border-[1px] border-white ">
+                  <div className="flex justify-around items-center font-bold text-base text-white rounded-full w-28 h-8 border-[1px] border-white z-10">
                     <button onClick={handleMinus}>-</button>
                     <p>{cant}</p>
                     <button onClick={handlePlus}>+</button>
@@ -131,11 +166,11 @@ const ItemDetail: React.FC = () => {
                 <div
                   className="flex justify-between my-4 items-center "
                   onClick={() => {
-                    if (product.stock > 0) handleAdd(product);
+                    if (variant && variant?.stock > 0) handleAdd(variant);
                   }}
                 >
                   {/* Botón agregar */}
-                  {product.stock > 0 ? (
+                  {variant && variant?.stock > 0 ? (
                     <button className="flex justify-between p-4 items-center font-bold text-base text-white w-full h-11 border-[1px] border-white rounded bg-black z-10">
                       <p>agregar</p>
                       <Image src={car} alt="carrito" width={18} height={18} />

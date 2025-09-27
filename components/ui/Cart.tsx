@@ -74,7 +74,7 @@ const Cart: React.FC = () => {
                 <div className="flex justify-between items-center ">
                   <div>
                     <p className="text-xs">${(item.price * item.quantity).toFixed(2)}</p>
-                    <p className="text-xs">X{item.quantity}</p>
+                    <p className="text-xs">X{item.quantity} { item.size ? `Talle: ${item.size}` : ''}</p>
                   </div>
                 </div>
               </div>

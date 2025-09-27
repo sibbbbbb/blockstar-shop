@@ -22,6 +22,7 @@ interface CartItem {
   price: number;
   stock: number;
   quantity: number;
+  size: string | null;
 }
 
 // Define la estructura del contexto
@@ -52,7 +53,6 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
 
   // Agregar un producto al carrito
   const addToCart = async (item: CartItem) => {
-    console.log(item)
     setCart((prevCart) => {
       const existingItem = prevCart.find((i) => i.id === item.id);
       if (existingItem) {
