@@ -82,7 +82,7 @@ const Modal: React.FC = () => {
       }`}
     >
       <div className="flex justify-center items-center h-full w-full">
-        <div className="flex flex-col p-4 w-11/12 h-4/6 md:w-3/12 md:h-80 bg-black border border-white font-monument">
+        <div className="flex flex-col p-4 w-11/12 h-4/6 md:w-6/12 xl:w-4/12 md:h-80 bg-black border border-white font-monument">
           {!loading ? (
             <div>
               <div className="flex flex-row items-center justify-between w-full text-xl">

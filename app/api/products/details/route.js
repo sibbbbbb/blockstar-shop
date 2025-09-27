@@ -20,7 +20,7 @@ export async function POST (request) {
   const data = await response.json()
 
   const formattedProduct = {
-    id: data.variants[0]?.id,
+    id: data.id,
     title: data.name.es,
     stock: data.variants[0]?.stock,
     images: data.images.map((image) => ({
@@ -29,6 +29,19 @@ export async function POST (request) {
       height: image.height,
       width: image.width
     })),
+    sizes: data.variants.map((variant) => {
+      return {
+        id: variant.id,
+        title: data.name.es,
+        images: [
+          { src: data.images[0]?.src, alt: `${data.id} product image` }
+        ],
+        position: variant.position,
+        stock: variant.stock,
+        price: variant.price,
+        size: variant.values.length > 0 ? variant.values[0].es : null
+      }
+    }),
     price: data.variants[0]?.price
   }
 
