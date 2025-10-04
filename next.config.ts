@@ -14,9 +14,15 @@ const nextConfig: NextConfig = {
         hostname: "dcdn-us.mitiendanube.com",
         port: "",
         pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "acdn-us.mitiendanube.com",
+        port: "",
+        pathname: "/**",
       }
-    ]
-  }
+    ],
+  },
 };
 
 export default nextConfig;
