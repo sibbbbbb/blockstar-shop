@@ -62,7 +62,7 @@ const ShopIndex: React.FC = () => {
                   <PricePill price={price} />
                 ) : (
                   <span className="uppercase font-helvetica font-bold text-gray-500">
-                    Sold Out
+                    sold out
                   </span>
                 )}
               </div>
